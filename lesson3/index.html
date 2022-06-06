@@ -1,0 +1,225 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+  </head>
+<body>
+ <script>
+      // ページの読み込みを待つ
+      window.addEventListener('DOMContentLoaded', init);
+
+      function init() {
+        // サイズを指定
+        const width = 800
+        const height = 600;
+
+        // レンダラーを作成
+        var renderer = new THREE.WebGLRenderer();
+        document.body.appendChild(renderer.domElement);
+        renderer.setSize(width, height);
+        // レンダラー：シャドウを有効にする
+        renderer.shadowMap.enabled = true;
+
+        // シーンを作成
+        const scene = new THREE.Scene();
+
+        // カメラを作成
+        const camera = new THREE.PerspectiveCamera(45, width / height);
+        // カメラの初期座標を設定
+        camera.position.set(0, 0, 5);
+
+        // カメラコントローラーを作成
+        const controls = new THREE.OrbitControls(camera, document.body); 
+        
+      // 平行光源(色、強さ）主光源
+      var directionalLightM = new THREE.DirectionalLight(0xffffff, 0.3);
+      directionalLightM.position.set(0, 10, -5);
+      directionalLightM.castShadow = true; 
+      //シーンに追加
+      scene.add(directionalLightM);
+
+      // 照明を作成SpotLight(色, 光の強さ, 距離, 照射角, ボケ具合, 減衰率)
+      var light = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 20, 0.2);
+      light.position.set(0,10, -15);
+      //light.target.position.set( 0, 5, -100 );
+      // ライトに影を有効にする
+      light.castShadow = true;
+      //light.shadow.mapSize.width = 2048;
+      //light.shadow.mapSize.height = 2048;
+      //scene.add(light);
+
+      // 平行光源(色、強さ）補助光源
+      var directionalLightS = new THREE.DirectionalLight(0xffffff,0.3);
+      directionalLightS.position.set(-1, -1, 1);
+      // シーンに追加
+      scene.add(directionalLightS);
+
+        // helper
+        //const gridHelper = new THREE.GridHelper(2,10); // size, step
+        //scene.add(gridHelper);
+        const axisHelper = new THREE.AxisHelper(5); //軸の長さ　X：赤、Y：緑、z：青
+        scene.add(axisHelper);
+
+        // 平面を作成
+        var planeGeometry = new THREE.PlaneGeometry(30,30);
+        //var planeMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
+        var planeMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+        var plane = new THREE.Mesh(planeGeometry,planeMaterial);
+        plane.receiveShadow = true; //影がつく
+        plane.rotation.set( -Math.PI/2, 0, 0 );
+        plane.position.set(0,-7,-2);
+
+        // 箱を作成
+        var geometry = new THREE.BoxGeometry(2, 2, 2);
+        var material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+        var rotateObject = new THREE.Mesh(geometry, material);
+        rotateObject.castShadow = true; //影ができる
+        rotateObject.receiveShadow = true; //影ができる
+
+        var littleAxisPoleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 6, 32);
+        var littleAxisCircleGeometry = new THREE.TorusGeometry( 2/*径*/, 0.1/*幅*/, 16/*ポリゴン数*/, 100/*ポリゴン数*/);
+
+        var zAxisMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+        var littleCircle = new THREE.Mesh(littleAxisCircleGeometry, zAxisMaterial);
+        littleCircle.rotation.x += Math.PI / 2;
+        littleCircle.castShadow = true;
+
+        var littlePole = new THREE.Mesh(littleAxisPoleGeometry, zAxisMaterial);
+        littlePole.rotation.x += Math.PI / 2;
+        littlePole.castShadow = true;
+
+        var middleAxisPoleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 1, 32);
+        var middleAxisCircleGeometry = new THREE.TorusGeometry( 3, 0.1, 16, 100);
+
+        var yAxisMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        var middleCircle = new THREE.Mesh(middleAxisCircleGeometry, yAxisMaterial);
+        middleCircle.rotation.y += Math.PI / 2;
+        middleCircle.castShadow = true;
+
+        var middlePoleTop = new THREE.Mesh(middleAxisPoleGeometry, yAxisMaterial);
+        middlePoleTop.position.y += 3.5;
+        middlePoleTop.castShadow = true;
+
+        var middlePoleBottom = new THREE.Mesh(middleAxisPoleGeometry, yAxisMaterial);
+        middlePoleBottom.position.y -= 3.5;
+        middlePoleBottom.castShadow = true;
+
+        var largeAxisPoleGeometry = middleAxisPoleGeometry;
+        var largeAxisCircleGeometry = new THREE.TorusGeometry( 4, 0.1, 16, 100);
+
+        var zAxisMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        var largeCircle = new THREE.Mesh(largeAxisCircleGeometry, zAxisMaterial);
+        largeCircle.castShadow = true;
+
+        var largePoleTop = new THREE.Mesh(largeAxisPoleGeometry, zAxisMaterial);
+        largePoleTop.rotation.z += Math.PI / 2;
+        largePoleTop.position.x += 4.5;
+        largePoleTop.castShadow = true;
+
+        var largePoleBottom = new THREE.Mesh(largeAxisPoleGeometry, zAxisMaterial);
+        largePoleBottom.rotation.z += Math.PI / 2;
+        largePoleBottom.position.x -= 4.5;
+        largePoleBottom.castShadow = true;
+
+        //z軸
+        const zAxis = new THREE.Group();
+        zAxis.add(littleCircle);
+        zAxis.add(littlePole);
+        zAxis.add(rotateObject);
+
+        //x軸
+        const yAxis = new THREE.Group();
+        yAxis.add(middleCircle);
+        yAxis.add(middlePoleTop);
+        yAxis.add(middlePoleBottom);
+        yAxis.add(zAxis);
+
+        //y軸
+        const xAxis = new THREE.Group();
+        xAxis.add(largeCircle);
+        xAxis.add(largePoleTop);
+        xAxis.add(largePoleBottom);
+        xAxis.add(yAxis);
+
+        var pedestalPoleGeometry = new THREE.CylinderGeometry(0.3, 0.3, 10, 32);
+        var pedestalPoleTopGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+        var pedestalPoleStandGeometry = new THREE.CylinderGeometry(10, 12, 2, 4);
+        var pedestalMaterial = new THREE.MeshPhongMaterial({color: 0xbec1c3});
+        var pedestalPoleTopMaterial = new THREE.MeshPhongMaterial({color: 0xffff00});
+        var pedestalStandMaterial = new THREE.MeshLambertMaterial({color: 0xc9caca});
+
+        var pedestalPoleLeft = new THREE.Mesh(pedestalPoleGeometry, pedestalMaterial);
+        pedestalPoleLeft.position.x -= 5;
+        pedestalPoleLeft.castShadow = true;
+        pedestalPoleLeft.receiveShadow = true;
+
+        var pedestalPoleRight = new THREE.Mesh(pedestalPoleGeometry, pedestalMaterial);
+        pedestalPoleRight.position.x += 5;
+        pedestalPoleRight.castShadow = true;
+        pedestalPoleRight.receiveShadow = true;
+
+        var pedestalPoleTopLeft = new THREE.Mesh(pedestalPoleTopGeometry, pedestalPoleTopMaterial);
+        pedestalPoleTopLeft.position.x -= 5;
+        pedestalPoleTopLeft.position.y += 5;
+        pedestalPoleTopLeft.castShadow = true;
+        pedestalPoleTopLeft.receiveShadow = true;
+
+
+        var pedestalPoleTopRight = new THREE.Mesh(pedestalPoleTopGeometry, pedestalPoleTopMaterial);
+        pedestalPoleTopRight.position.x += 5;
+        pedestalPoleTopRight.position.y += 5;
+        pedestalPoleTopRight.castShadow = true;
+        pedestalPoleTopRight.receiveShadow = true;
+
+
+        var pedestalStand = new THREE.Mesh(pedestalPoleStandGeometry, pedestalStandMaterial);
+        pedestalStand.rotation.y += Math.PI / 4;
+        pedestalStand.position.y -= 6;
+        pedestalStand.castShadow = true;
+        pedestalStand.receiveShadow = true;
+
+
+        const pedestal = new THREE.Group();
+        pedestal.add(pedestalStand);
+        pedestal.add(pedestalPoleLeft);
+        pedestal.add(pedestalPoleRight);
+        pedestal.add(pedestalPoleTopLeft);
+        pedestal.add(pedestalPoleTopRight);
+
+        const all = new THREE.Group();
+        all.add(pedestal);
+        all.add(xAxis);
+        all.add(plane);
+
+        scene.add(all);
+        
+        update(); //繰り返しイベントへ 
+
+        // 毎フレーム時に実行されるループイベントです
+        function update() {
+          // レンダリング
+          renderer.render(scene, camera);
+          requestAnimationFrame(update);
+
+          xAxis.rotation.x += 0.001;
+          
+          yAxis.rotation.y += 0.002;
+
+          zAxis.rotation.z += 0.003;
+
+          /*// 箱を回転させる
+          box.rotation.x += 0.01;
+          box.rotation.y += 0.01;
+
+          // 円錐を回転させる
+          cone.rotation.z -= 0.01;
+          cone.rotation.y -= 0.01;
+
+          all.rotation.x += 0.1;*/
+
+        }
+      }
+    </script>
+</body>
+</html>
