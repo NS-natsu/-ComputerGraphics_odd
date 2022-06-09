@@ -224,7 +224,7 @@
         scene.add(axisHelper);
 
         // 平面を作成
-        var planeGeometry = new THREE.PlaneGeometry(22,150);
+        var planeGeometry = new THREE.PlaneGeometry(22,200);
         var planeMaterial = new THREE.MeshPhongMaterial();
         var textureLoader = new THREE.TextureLoader();  
         var stoneTxt = textureLoader.load("img/stone.jpg");
@@ -234,6 +234,7 @@
         planeMaterial.bumpscale = 0.2;
         planeMaterial.map.wrapS = THREE.RepeatWrapping;
         planeMaterial.map.wrapT = THREE.RepeatWrapping;
+        planeMaterial.map.repeat.set(1, 10);
         var plane = new THREE.Mesh(planeGeometry,planeMaterial);
         plane.rotation.set( -Math.PI/2, 0, 0 );
         plane.receiveShadow = true; //影がつく
@@ -262,30 +263,30 @@
         var textureStar = textureLoader.load("img/star.png");
         const materialStar = new THREE.SpriteMaterial({ map: textureStar,});
         const spriteStar1 = new THREE.Sprite(materialStar);
-        spriteStar1.position.x = 50;
+        spriteStar1.position.x = 70;
         spriteStar1.position.y = 0 + 500;
         spriteStar1.position.z = 0;
         spriteStar1.scale.set(50,50,50);
         scene.add(spriteStar1);
 
         const spriteStar2 = new THREE.Sprite(materialStar);
-        spriteStar2.position.x = -30;
+        spriteStar2.position.x = -60;
         spriteStar2.position.y = 0 + 500;
-        spriteStar2.position.z = 70;
+        spriteStar2.position.z = 100;
         spriteStar2.scale.set(50,50,50);
         scene.add(spriteStar2);
 
         const spriteStar3 = new THREE.Sprite(materialStar);
-        spriteStar3.position.x = -20;
+        spriteStar3.position.x = -50;
         spriteStar3.position.y = 0 + 500;
-        spriteStar3.position.z = -40;
+        spriteStar3.position.z = -70;
         spriteStar3.scale.set(50,50,50);
         scene.add(spriteStar3);
 
         const spriteStar4 = new THREE.Sprite(materialStar);
-        spriteStar4.position.x = 70;
+        spriteStar4.position.x = 100;
         spriteStar4.position.y = 50 + 500;
-        spriteStar4.position.z = 10;
+        spriteStar4.position.z = 40;
         spriteStar4.scale.set(50,50,50);
         scene.add(spriteStar4);
 
