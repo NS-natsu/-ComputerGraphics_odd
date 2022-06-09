@@ -241,10 +241,10 @@
         scene.add(plane);
         
         const streetLight = new Array();
-        for(let i = 0; i < 7; i++){
+        for(let i = 0; i < 5; i++){
             let obj = createStreetLight();
             obj.position.x = 10;
-            obj.position.z = -20 * i + 3 * 20;
+            obj.position.z = -40 * i + 3 * 40;
             streetLight.push(obj);
 
             obj = createStreetLight();
