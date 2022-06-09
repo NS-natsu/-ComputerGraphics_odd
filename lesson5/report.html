@@ -227,8 +227,7 @@
 
         // 平面を作成
         var planeGeometry = new THREE.PlaneGeometry(22,150);
-        var planeMaterial = new THREE.MeshPhongMaterial({color: 0x00ff00});
-        /*var planeMaterial = new THREE.MeshPhongMaterial();
+        var planeMaterial = new THREE.MeshPhongMaterial();
         var textureLoader = new THREE.TextureLoader();  
         var stoneTxt = textureLoader.load("stone.jpg");
         var bump = textureLoader.load("stone-bump.jpg");
@@ -236,7 +235,7 @@
         planeMaterial.bumpMap = bump;
         planeMaterial.bumpscale = 0.2;
         planeMaterial.map.wrapS = THREE.RepeatWrapping;
-        planeMaterial.map.wrapT = THREE.RepeatWrapping;*/
+        planeMaterial.map.wrapT = THREE.RepeatWrapping;
         var plane = new THREE.Mesh(planeGeometry,planeMaterial);
         plane.rotation.set( -Math.PI/2, 0, 0 );
         plane.receiveShadow = true; //影がつく
@@ -263,6 +262,8 @@
 
 
 
+        var textureStar = textureLoader.load("img/star.png");
+        const materialStar = new THREE.SpriteMaterial({ map: textureStar,});
         const spriteStar1 = new THREE.Sprite(materialStar);
         spriteStar1.position.x = 50;
         spriteStar1.position.y = 0 + 500;
