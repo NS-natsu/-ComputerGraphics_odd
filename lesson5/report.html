@@ -185,8 +185,6 @@
         sprite.receiveShadow = true;
         streetLight.add(sprite);
 
-        streetLight.position.y -= 9;
-
         return streetLight;
       }
 
@@ -240,10 +238,9 @@
         plane.rotation.set( -Math.PI/2, 0, 0 );
         plane.receiveShadow = true; //影がつく
 
-        //scene.add(plane);
-        scene.add(createStreetLight());
-
-       /* const streetLight = new Array();
+        scene.add(plane);
+        
+        const streetLight = new Array();
         for(let i = 0; i < 7; i++){
             let obj = createStreetLight();
             obj.position.x = 10;
@@ -258,7 +255,7 @@
 
         for(let i = 0; i < streetLight.length; i++){
             scene.add(streetLight[i]);
-        }*/
+        }
 
 
 
