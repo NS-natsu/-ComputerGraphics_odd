@@ -235,6 +235,9 @@
         planeMaterial.map.wrapS = THREE.RepeatWrapping;
         planeMaterial.map.wrapT = THREE.RepeatWrapping;
         planeMaterial.map.repeat.set(1, 10);
+        planeMaterial.bumpMap.wrapS = THREE.RepeatWrapping;
+        planeMaterial.bumpMap.wrapT = THREE.RepeatWrapping;
+        planeMaterial.bumpMap.repeat.set(1, 10);
         var plane = new THREE.Mesh(planeGeometry,planeMaterial);
         plane.rotation.set( -Math.PI/2, 0, 0 );
         plane.receiveShadow = true; //影がつく
