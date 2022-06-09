@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+	<script src="OrbitControls.js"></script>
+	<script>
+		// ページの読み込みを待つ
+		window.addEventListener('load', init);
+
+		function init() {
+			// サイズを指定
+			const width = 960;
+			const height = 540;
+
+	        // レンダラーを作成
+			const renderer = new THREE.WebGLRenderer({
+ 				canvas: document.querySelector('#myCanvas')
+			});
+			renderer.setSize(width, height);
+			// 背景の色を設定
+			renderer.setClearColor(0xeeeeff);
+			// シーンを作成
+			const scene = new THREE.Scene();
+
+			// カメラを作成
+			const camera = new THREE.PerspectiveCamera(45, width / height);
+			// カメラの初期座標を設定
+			camera.position.set(-200, 200, -200);
+
+			// カメラコントローラーを作成
+			const controls = new THREE.OrbitControls(camera,document.body);
+			// 平行光源1
+			var directionalLight1 = new THREE.DirectionalLight(0xffffff);
+			directionalLight1.position.set(100, 100, 100);
+			// シーンに追加
+			scene.add(directionalLight1);
+			// 平行光源2
+			var directionalLight2 = new THREE.DirectionalLight(0xffffff);
+			directionalLight2.position.set(-100, 100, 100);
+			// シーンに追加
+			scene.add(directionalLight2);
+
+			// helper
+			const gridHelper = new THREE.GridHelper(200,50); // size, step
+			scene.add(gridHelper);
+
+			const axisHelper = new THREE.AxisHelper(200,50);
+			scene.add(axisHelper);
+
+			// 太陽をスプライトで作成
+			var textureLoader = new THREE.TextureLoader();  
+			var textureSun = textureLoader.load("img/sun.png");
+			const materialSun = new THREE.SpriteMaterial({ map: textureSun,});
+
+			const spriteSun = new THREE.Sprite(materialSun);
+			spriteSun.scale.set(50,50,50);
+			scene.add(spriteSun);
+
+			// 星をスプライトで作成 
+			var textureStar = textureLoader.load("img/star.png");
+			const materialStar = new THREE.SpriteMaterial({ map: textureStar,});
+
+			const spriteStar1 = new THREE.Sprite(materialStar);
+			spriteStar1.position.x = 50;
+			spriteStar1.position.y = 0;
+			spriteStar1.position.z = 0;
+			spriteStar1.scale.set(50,50,50);
+			scene.add(spriteStar1);
+
+			const spriteStar2 = new THREE.Sprite(materialStar);
+			spriteStar2.position.x = -30;
+			spriteStar2.position.y = 0;
+			spriteStar1.position.z = 0;
+			spriteStar1.scale.set(50,50,50);
+			scene.add(spriteStar1);
+
+			const spriteStar2 = new THREE.Sprite(materialStar);
+			spriteStar2.position.x = -30;
+			spriteStar2.position.y = 0;
+			spriteStar3.position.z = -40;
+			spriteStar3.scale.set(50,50,50);
+			scene.add(spriteStar3);
+
+			const spriteStar4 = new THREE.Sprite(materialStar);
+			spriteStar4.position.x = 70;
+			spriteStar4.position.y = 50;
+			spriteStar4.position.z = 10;
+			spriteStar4.scale.set(50,50,50);
+			scene.add(spriteStar4);
+			tick();
+			// 毎フレーム時に実行されるループイベントです
+			function tick() {
+				// レンダリング
+				renderer.render(scene, camera);
+				requestAnimationFrame(tick);
+			}
+		}
+	</script>
+</head>
+
+<body>
+	<canvas id="myCanvas"></canvas>
+</body>
