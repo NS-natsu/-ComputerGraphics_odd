@@ -1,25 +1,205 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="utf-8" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
-    <script src="OrbitControls.js"></script>
-    <script>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>バンプマップ、テクスチャとジオメトリの対応</title>
+    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+  </head>
+<body>
+ <script>
       // ページの読み込みを待つ
-      window.addEventListener('load', init);
+      window.addEventListener('DOMContentLoaded', init);
+
+      function createpillar6(l, t, material){
+        const pillar = new THREE.Group();
+        const boxGeometry = new THREE.BoxGeometry(l, t, l*Math.sqrt(3));
+
+        let box = new THREE.Mesh(boxGeometry, material);
+        box.castShadow = true;
+        box.receiveShadow = true;
+        pillar.add(box);
+
+        box = new THREE.Mesh(boxGeometry, material);
+        box.rotation.y += Math.PI / 3;
+        box.castShadow = true;
+        box.receiveShadow = true;
+        pillar.add(box);
+
+        box = new THREE.Mesh(boxGeometry, material);
+        box.rotation.y -= Math.PI / 3;
+        box.castShadow = true;
+        box.receiveShadow = true;
+        pillar.add(box);
+
+        return pillar;
+      }
+
+      function createStreetLight(){
+        const sqrt3 = Math.sqrt(3);
+        const phongMat = new THREE.MeshPhongMaterial({color: 0x444444});
+        const lambertMat = new THREE.MeshLambertMaterial({color: 0x444444});
+
+        const pedestal = new THREE.Group();
+
+        var basis = createpillar6(1, 0.1, phongMat);
+        pedestal.rotation.y += Math.PI / 6;
+        pedestal.add(basis);
+
+        basis = new THREE.Mesh(                                     
+            new THREE.CylinderGeometry(sqrt3 / 2 - 0.4,sqrt3 / 2 - 0.1,1,50),
+            phongMat
+        );
+        basis.position.y += 0.5  + 0.05;
+        basis.castShadow = true;
+        basis.receiveShadow = true;
+        pedestal.add(basis);
+
+        const pillar = new THREE.Group();
+        const post = new THREE.Mesh(                                     
+            new THREE.CylinderGeometry(sqrt3 / 2 - 0.65,sqrt3 / 2 - 0.55, 7,50),
+            phongMat
+        );
+        post.position.y += 3.5 + 1  + 0.05;
+        post.castShadow = true;
+        post.receiveShadow = true;
+        pillar.add(post);
+
+        var ornament;
+
+        const head = new THREE.Group();
+        ornament = new THREE.Mesh(                                     
+            new THREE.CylinderGeometry(sqrt3 / 2 - 0.55,sqrt3 / 2 - 0.55, 0.25,50),
+            phongMat
+        );
+        ornament.position.y +=  7 + 1  + 0.05 + 0.125 - 0.25;
+        ornament.castShadow = true;
+        ornament.receiveShadow = true;
+        head.add(ornament);
+
+        ornament = createpillar6(sqrt3 / 2 - 0.45, 0.1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.05;
+        head.add(ornament);
+
+        ornament = createpillar6(sqrt3 / 2 - 0.40, 0.1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.05;
+        head.add(ornament);
+
+        ornament = createpillar6(sqrt3 / 2 - 0.35, 0.1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.05;
+        head.add(ornament);
+
+        ornament = new THREE.Mesh(                                     
+            new THREE.CylinderGeometry(sqrt3 / 2 - 0.25,sqrt3 / 2 - 0.35, 0.05,6),
+            phongMat
+        );
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.025;
+        ornament.rotation.y += Math.PI / 6;
+        ornament.castShadow = true;
+        ornament.receiveShadow = true;
+        head.add(ornament);
+
+        ornament = createpillar6(sqrt3 / 2 - 0.25, 0.1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.05 + 0.05;
+        head.add(ornament);
+
+        const k = Math.atan(0.075 * sqrt3);
+        const l = Math.atan(0.075);
+
+        ornament = createpillar6(0.05, 1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.025 + 0.6;
+        ornament.position.x +=  (sqrt3 / 2 - 0.25 - 0.05) / 2 + 0.55*Math.sin(k) - 0.0352;
+        ornament.position.z +=  sqrt3 * (sqrt3 / 2 - 0.25 - 0.05) / 2 + 0.55*Math.sin(l) + 0.0215;
+        ornament.rotation.x += k;
+        ornament.rotation.z -= l;
+        head.add(ornament);
+
+        ornament = createpillar6(0.05, 1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.025 + 0.6;
+        ornament.position.x -=  (sqrt3 / 2 - 0.25 - 0.05) / 2 + 0.55*Math.sin(k) - 0.0351;
+        ornament.position.z +=  sqrt3 * (sqrt3 / 2 - 0.25 - 0.05) / 2 + 0.55*Math.sin(l) + 0.022;
+        ornament.rotation.x += k;
+        ornament.rotation.z += l;
+        head.add(ornament);
+
+        ornament = createpillar6(0.05, 1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.025 + 0.6;
+        ornament.position.x +=  (sqrt3 / 2 - 0.25 - 0.05) / 2 + 0.55*Math.sin(k) - 0.0351;
+        ornament.position.z -=  sqrt3 * (sqrt3 / 2 - 0.25 - 0.05) / 2 + 0.55*Math.sin(l) + 0.022;
+        ornament.rotation.x -= k;
+        ornament.rotation.z -= l;
+        head.add(ornament);
+
+        ornament = createpillar6(0.05, 1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.025 + 0.6;
+        ornament.position.x -=  (sqrt3 / 2 - 0.25 - 0.05) / 2 + 0.55*Math.sin(k) - 0.0351;
+        ornament.position.z -=  sqrt3 * (sqrt3 / 2 - 0.25 - 0.05) / 2 + 0.55*Math.sin(l) + 0.022;
+        ornament.rotation.x -= k;
+        ornament.rotation.z += l;
+        head.add(ornament);
+
+        const m = Math.atan(0.15);
+
+        ornament = createpillar6(0.05, 1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.025 + 0.6;
+        ornament.position.x +=  sqrt3 / 2 - 0.25 - 0.05 + 0.55*Math.sin(m) - 0.0105;
+        ornament.rotation.z -= m;
+        head.add(ornament);
+
+        ornament = createpillar6(0.05, 1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.025 + 0.6;
+        ornament.position.x -=  sqrt3 / 2 - 0.25 - 0.05 + 0.55*Math.sin(m) - 0.0105;
+        ornament.rotation.z += m;
+        head.add(ornament);
+
+        ornament = createpillar6(sqrt3 / 2 - 0.1, 0.1, phongMat);
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.1 + 0.05 + 1;
+        head.add(ornament);
+
+        ornament = new THREE.Mesh(                                     
+            new THREE.CylinderGeometry(sqrt3 / 2 - 0.15,sqrt3 / 2 - 0.1, 0.05,6),
+            phongMat
+        );
+        ornament.castShadow = true;
+        ornament.receiveShadow = true;
+        ornament.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.1 + 0.05 + 1 + 0.075;
+        ornament.rotation.y += Math.PI / 6;
+        head.add(ornament);
+
+        const streetLight = new THREE.Group();
+
+        const light = new THREE.PointLight(0xFFFFFF, 1, 50, 1.4);
+        light.castShadow = true;
+        light.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.1 + 0.05 + 0.9;
+
+        streetLight.add(pedestal);
+        streetLight.add(pillar);
+        streetLight.add(head);
+        streetLight.add(light);
+
+        var textureLoader = new THREE.TextureLoader();
+        var texture = textureLoader.load("img/光源.png");
+        const mat = new THREE.SpriteMaterial({ map: texture,});
+        const sprite = new THREE.Sprite(mat);
+        sprite.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.1 + 0.05 + 0.5;
+        sprite.scale.set(0.2,0.2,0.2);
+        sprite.receiveShadow = true;
+        streetLight.add(sprite);
+
+        streetLight.position.y -= 9;
+
+        return streetLight;
+      }
 
       function init() {
         // サイズを指定
-        const width = 960;
-        const height = 540;
+        const width = 800
+        const height = 600;
 
         // レンダラーを作成
-        const renderer = new THREE.WebGLRenderer({
-          canvas: document.querySelector('#myCanvas')
-        });
+        var renderer = new THREE.WebGLRenderer();
+        document.body.appendChild(renderer.domElement);
         renderer.setSize(width, height);
-        // 背景の色を設定
-        renderer.setClearColor(0xeeeeff);
+        renderer.shadowMap.enabled = true;
 
         // シーンを作成
         const scene = new THREE.Scene();
@@ -27,82 +207,99 @@
         // カメラを作成
         const camera = new THREE.PerspectiveCamera(45, width / height);
         // カメラの初期座標を設定
-        camera.position.set(-200, 200, -200);
+        camera.position.set(0, 0, 100);
 
         // カメラコントローラーを作成
-        const controls = new THREE.OrbitControls(camera,document.body);
-  
+        const controls = new THREE.OrbitControls(camera, document.body); 
+        
         // 平行光源1
-        var directionalLight1 = new THREE.DirectionalLight(0xffffff);
-        directionalLight1.position.set(100, 100, 100);
+        var directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.3);
+        directionalLight1.position.set(-100, 10000, 1000);
         // シーンに追加
         scene.add(directionalLight1);
-        // 平行光源2
-        var directionalLight2 = new THREE.DirectionalLight(0xffffff);
-        directionalLight2.position.set(-100, 100, 100);
-        // シーンに追加
-        scene.add(directionalLight2);
 
         // helper
-        const gridHelper = new THREE.GridHelper(200,50); // size, step
+        const gridHelper = new THREE.GridHelper(100,25); // size, step
         scene.add(gridHelper);
 
-        const axisHelper = new THREE.AxisHelper(200,50);
+        const axisHelper = new THREE.AxisHelper(100,25);
         scene.add(axisHelper);
 
-        // 太陽をスプライトで作成
+        // 平面を作成
+        var planeGeometry = new THREE.PlaneGeometry(22,150);
+        var planeMaterial = new THREE.MeshPhongMaterial({color: 0x00ff00});
+        /*var planeMaterial = new THREE.MeshPhongMaterial();
         var textureLoader = new THREE.TextureLoader();  
-        var textureSun = textureLoader.load("img/sun.png");
-        const materialSun = new THREE.SpriteMaterial({ map: textureSun,});
+        var stoneTxt = textureLoader.load("stone.jpg");
+        var bump = textureLoader.load("stone-bump.jpg");
+        planeMaterial.map = stoneTxt;
+        planeMaterial.bumpMap = bump;
+        planeMaterial.bumpscale = 0.2;
+        planeMaterial.map.wrapS = THREE.RepeatWrapping;
+        planeMaterial.map.wrapT = THREE.RepeatWrapping;*/
+        var plane = new THREE.Mesh(planeGeometry,planeMaterial);
+        plane.rotation.set( -Math.PI/2, 0, 0 );
+        plane.receiveShadow = true; //影がつく
 
-        const spriteSun = new THREE.Sprite(materialSun);
-        spriteSun.scale.set(50,50,50);
-        scene.add(spriteSun);
+        //scene.add(plane);
+        scene.add(createStreetLight());
 
-        // 星をスプライトで作成 
-        var textureStar = textureLoader.load("img/star.png");
-        const materialStar = new THREE.SpriteMaterial({ map: textureStar,});
+       /* const streetLight = new Array();
+        for(let i = 0; i < 7; i++){
+            let obj = createStreetLight();
+            obj.position.x = 10;
+            obj.position.z = -20 * i + 3 * 20;
+            streetLight.push(obj);
+
+            obj = createStreetLight();
+            obj.position.x = -10;
+            obj.position.z = -10 * i;
+            //streetLight.push(obj);
+        }
+
+        for(let i = 0; i < streetLight.length; i++){
+            scene.add(streetLight[i]);
+        }*/
+
+
 
         const spriteStar1 = new THREE.Sprite(materialStar);
         spriteStar1.position.x = 50;
-        spriteStar1.position.y = 0;
+        spriteStar1.position.y = 0 + 500;
         spriteStar1.position.z = 0;
         spriteStar1.scale.set(50,50,50);
         scene.add(spriteStar1);
 
         const spriteStar2 = new THREE.Sprite(materialStar);
         spriteStar2.position.x = -30;
-        spriteStar2.position.y = 0;
+        spriteStar2.position.y = 0 + 500;
         spriteStar2.position.z = 70;
         spriteStar2.scale.set(50,50,50);
         scene.add(spriteStar2);
 
         const spriteStar3 = new THREE.Sprite(materialStar);
         spriteStar3.position.x = -20;
-        spriteStar3.position.y = 0;
+        spriteStar3.position.y = 0 + 500;
         spriteStar3.position.z = -40;
         spriteStar3.scale.set(50,50,50);
         scene.add(spriteStar3);
 
         const spriteStar4 = new THREE.Sprite(materialStar);
         spriteStar4.position.x = 70;
-        spriteStar4.position.y = 50;
+        spriteStar4.position.y = 50 + 500;
         spriteStar4.position.z = 10;
         spriteStar4.scale.set(50,50,50);
         scene.add(spriteStar4);
 
-        tick();
+        update();
+
         // 毎フレーム時に実行されるループイベントです
-        function tick() {
+        function update() {
           // レンダリング
           renderer.render(scene, camera);
-          requestAnimationFrame(tick);
+          requestAnimationFrame(update);
         }
       }
     </script>
-  </head>
-
-  <body>
-    <canvas id="myCanvas"></canvas>
-  </body>
+</body>
 </html>
