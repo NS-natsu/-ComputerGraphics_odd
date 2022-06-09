@@ -177,7 +177,7 @@
         streetLight.add(light);
 
         var textureLoader = new THREE.TextureLoader();
-        var texture = textureLoader.load("img/光源.png");
+        var texture = textureLoader.load("img/light.png");
         const mat = new THREE.SpriteMaterial({ map: texture,});
         const sprite = new THREE.Sprite(mat);
         sprite.position.y +=  7 + 1  + 0.05 + 0.1 + 0.1 + 0.1 + 0.1 + 0.05 + 0.5;
@@ -227,8 +227,8 @@
         var planeGeometry = new THREE.PlaneGeometry(22,150);
         var planeMaterial = new THREE.MeshPhongMaterial();
         var textureLoader = new THREE.TextureLoader();  
-        var stoneTxt = textureLoader.load("stone.jpg");
-        var bump = textureLoader.load("stone-bump.jpg");
+        var stoneTxt = textureLoader.load("img/stone.jpg");
+        var bump = textureLoader.load("img/stone-bump.jpg");
         planeMaterial.map = stoneTxt;
         planeMaterial.bumpMap = bump;
         planeMaterial.bumpscale = 0.2;
