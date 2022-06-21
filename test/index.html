@@ -1,0 +1,167 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+  </head>
+<body>
+ <script>
+      // ページの読み込みを待つ
+      window.addEventListener('DOMContentLoaded', init);
+
+      let test;
+      let testm;
+      let test_;
+
+      function init() {
+        // サイズを指定
+        const width = 800
+        const height = 600;
+
+        // レンダラーを作成
+        var renderer = new THREE.WebGLRenderer();
+        document.body.appendChild(renderer.domElement);
+        renderer.setSize(width, height);
+        // レンダラー：シャドウを有効にする
+        renderer.shadowMap.enabled = true;
+
+        // シーンを作成
+        const scene = new THREE.Scene();
+
+        // カメラを作成
+        const camera = new THREE.PerspectiveCamera(45, width / height);
+        // カメラの初期座標を設定
+        camera.position.set(0, 0, 5);
+
+        // カメラコントローラーを作成
+        const controls = new THREE.OrbitControls(camera, document.body); 
+        
+      // 平行光源(色、強さ）主光源
+      var directionalLightM = new THREE.DirectionalLight(0xffffff, 0.3);
+      directionalLightM.position.set(0, 10, -5);
+      directionalLightM.castShadow = true; 
+      //シーンに追加
+      scene.add(directionalLightM);
+
+      // 照明を作成SpotLight(色, 光の強さ, 距離, 照射角, ボケ具合, 減衰率)
+      var light = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 20, 0.2);
+      light.position.set(0,10, -15);
+      light.target.position.set( 0, 5, -100 );
+      // ライトに影を有効にする
+      light.castShadow = true;
+      //light.shadow.mapSize.width = 2048;
+      //light.shadow.mapSize.height = 2048;
+      //scene.add(light);
+
+      // 平行光源(色、強さ）補助光源
+      var directionalLightS = new THREE.DirectionalLight(0xffffff,0.3);
+      directionalLightS.position.set(-1, -1, 1);
+      // シーンに追加
+      scene.add(directionalLightS);
+
+        // helper
+        const gridHelper = new THREE.GridHelper(2,10); // size, step
+        scene.add(gridHelper);
+        const axisHelper = new THREE.AxisHelper(5); //軸の長さ　X：赤、Y：緑、z：青
+        scene.add(axisHelper);
+
+        const textureLoader = new THREE.TextureLoader();
+
+        const torus_size = 10000;
+        const torus_width = 20;
+        const torus_angle = torus_size / 10;
+        const geometry = new THREE.TorusGeometry( torus_size, torus_width, 3, torus_angle);
+        let x, y, z;
+        let base = {
+            x:geometry.attributes.normal.array[0],
+            y:geometry.attributes.normal.array[1],
+            z:geometry.attributes.normal.array[2]
+        };
+        const getSize = function(c){
+          return Math.sqrt(c.x * c.x + c.y * c.y + c.z * c.z);
+        }
+        const inner = function(a, b){
+          return a.x * b.x + a.y * b.y + a.z * b.z;
+        }
+        const cross = function(a, b){
+          return {
+            x : a.y * b.z - a.z * b.y,
+            y : a.z * b.x - a.x * b.z,
+            z : a.x * b.y - a.y * b.x,
+          };
+        }
+        let tmp, tmp1, tmp2;
+        for(let i = 0; i < 3 * torus_angle; i+= 3){
+          tmp1 = {
+              x:geometry.attributes.normal.array[i + 0],
+              y:geometry.attributes.normal.array[i + 1],
+              z:geometry.attributes.normal.array[i + 2]
+          };
+          tmp2 = {
+              x:geometry.attributes.normal.array[i + 3],
+              y:geometry.attributes.normal.array[i + 4],
+              z:geometry.attributes.normal.array[i + 5]
+          };
+
+          tmp1.x -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 0];
+          tmp1.y -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 1];
+          tmp1.z -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 2];
+
+          tmp2.x -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 0];
+          tmp2.y -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 1];
+          tmp2.z -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 2];
+
+          tmp = cross(tmp1, tmp2);
+
+          geometry.attributes.normal.array[i + 0] = tmp.x;
+          geometry.attributes.normal.array[i + 1] = tmp.y;
+          geometry.attributes.normal.array[i + 2] = tmp.z;
+          geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 0] = tmp.x;
+          geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 1] = tmp.y;
+          geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 2] = tmp.z;
+        }
+        geometry.attributes.normal.array[3 * torus_angle + 0] = tmp.x;
+        geometry.attributes.normal.array[3 * torus_angle + 1] = tmp.y;
+        geometry.attributes.normal.array[3 * torus_angle + 2] = tmp.z;
+        geometry.attributes.normal.array[3 * torus_angle + 3 * (torus_angle + 1) + 0] = tmp.x;
+        geometry.attributes.normal.array[3 * torus_angle + 3 * (torus_angle + 1) + 1] = tmp.y;
+        geometry.attributes.normal.array[3 * torus_angle + 3 * (torus_angle + 1) + 2] = tmp.z;
+        geometry.attributes.normal.normalized = true;/**/
+        const material = new THREE.MeshStandardMaterial();
+
+
+        material.map = textureLoader.load("img/road.jpg");
+        /*material.bumpMap = bump;
+        material.bumpscale = 0.2;*/
+        material.map.wrapS = THREE.RepeatWrapping;
+        material.map.wrapT = THREE.RepeatWrapping;
+        material.map.repeat.set(torus_size / 2, 3);/**/
+        /*material.bumpMap.wrapS = THREE.RepeatWrapping;
+        material.bumpMap.wrapT = THREE.RepeatWrapping;
+        material.bumpMap.repeat.set(1, 10);*/
+        const torus = new THREE.Mesh( geometry, material );
+        torus.position.y -= torus_width / 2 + torus_size / 2 + 1;
+        torus.position.x += torus_size * Math.sqrt(3) / 2 + 13;
+        torus.rotation.x -= Math.PI / 2;
+        torus.rotation.y += Math.PI / 6;
+        torus.receiveShadow = true; //影がつく
+        scene.add( torus );
+
+        test = geometry.attributes.normal;
+        testm = material;
+        test_ = torus;
+        
+        update(); //繰り返しイベントへ 
+
+        // 毎フレーム時に実行されるループイベントです
+        function update() {
+          // レンダリング
+          renderer.render(scene, camera);
+          requestAnimationFrame(update);
+
+          //torus.rotation.z -= 0.02;
+        }
+      }
+    </script>
+</body>
+</html>
