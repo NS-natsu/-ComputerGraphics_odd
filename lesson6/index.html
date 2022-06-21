@@ -144,8 +144,11 @@
         torus.position.x += torus_size * Math.sqrt(3) / 2 + 13;
         torus.rotation.x -= Math.PI / 2;
         torus.rotation.y += Math.PI / 6;
+        torus.fog
         torus.receiveShadow = true; //影がつく
         scene.add( torus );
+
+        scene.fog = new THREE.FogExp2(0x555555, 0.025);
 
         test = geometry.attributes.normal;
         testm = material;
@@ -159,7 +162,7 @@
           renderer.render(scene, camera);
           requestAnimationFrame(update);
 
-          //torus.rotation.z -= 0.02;
+          torus.rotation.z -= 0.02;
         }
       }
     </script>
