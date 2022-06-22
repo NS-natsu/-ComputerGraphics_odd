@@ -12,6 +12,8 @@
       let test;
       let testm;
       let test_;
+   
+      let scene;
 
       function init() {
         // サイズを指定
@@ -26,7 +28,7 @@
         renderer.shadowMap.enabled = true;
 
         // シーンを作成
-        const scene = new THREE.Scene();
+        scene = new THREE.Scene();
 
         // カメラを作成
         const camera = new THREE.PerspectiveCamera(45, width / height);
@@ -166,7 +168,7 @@
         mat.bumpMap.wrapT = THREE.RepeatWrapping;
         mat.bumpMap.repeat.set(torus_size / 2, 1);
         
-        cosnt tor = new THREE.Mesh(geo, mat);
+        const tor = new THREE.Mesh(geo, mat);
         tor.position.y -= - torus_width * Math.sqrt(3) / 2 + torus_size / 2 + 1;
         tor.position.x += torus_size * Math.sqrt(3) / 2 + 13;
         tor.rotation.x -= Math.PI / 2;
