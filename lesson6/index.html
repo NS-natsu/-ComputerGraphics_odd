@@ -14,6 +14,8 @@
       let test_;
    
       let scene;
+   
+      const arr = new Array();
 
       function init() {
         // サイズを指定
@@ -149,6 +151,7 @@
         torus.fog
         torus.receiveShadow = true; //影がつく
         scene.add( torus );
+        arr.push(torus);
 
         //scene.fog = new THREE.FogExp2(0x555555, 0.025);
 
@@ -158,7 +161,7 @@
         
         const geo = new THREE.TorusGeometry( torus_size, torus_width * Math.sqrt(3), 16, torus_angle);
         const mat = new THREE.MeshStandardMaterial({side: THREE.DoubleSide});
-        mat.map = textureLoader.load("img/stone-bump.jpg");
+        mat.map = textureLoader.load("img/tester.jpg");
         mat.bumpMap = mat.map;
         mat.bumpscale = 0.2;
         mat.map.wrapS = THREE.RepeatWrapping;
@@ -175,6 +178,7 @@
         tor.rotation.y += Math.PI / 6;
               
         scene.add(tor);
+        arr.push(tor);
         
         update(); //繰り返しイベントへ 
 
