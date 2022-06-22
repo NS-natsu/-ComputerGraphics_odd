@@ -154,6 +154,20 @@
         testm = material;
         test_ = torus;
         
+        const geo = new THREE.TorusGeometry( torus_size, torus_width, 3, torus_angle);
+        const mat = new THREE.MeshStandardMaterial();
+        mat.map = textureLoader.load("img/road.jpg");
+        mat.bumpMap = mat.map;
+        mat.bumpscale = 0.2;/
+        mat.map.wrapS = THREE.RepeatWrapping;
+        mat.map.wrapT = THREE.RepeatWrapping;
+        mat.map.repeat.set(torus_size / 2, 1);
+        mat.bumpMap.wrapS = THREE.RepeatWrapping;
+        mat.bumpMap.wrapT = THREE.RepeatWrapping;
+        mat.bumpMap.repeat.set(torus_size / 2, 1);
+              
+        scene.add(new THREE.Mesh(geo, mat));
+        
         update(); //繰り返しイベントへ 
 
         // 毎フレーム時に実行されるループイベントです
