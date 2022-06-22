@@ -148,37 +148,59 @@
         torus.position.x += torus_size * Math.sqrt(3) / 2 + 13;
         torus.rotation.x -= Math.PI / 2;
         torus.rotation.y += Math.PI / 6;
-        torus.fog
-        torus.receiveShadow = true; //影がつく
+        //torus.receiveShadow = true; //影がつく
         scene.add( torus );
         arr.push(torus);
 
-        //scene.fog = new THREE.FogExp2(0x555555, 0.025);
-
-        test = geometry.attributes.normal;
-        testm = material;
-        test_ = torus;
+        scene.fog = new THREE.FogExp2(0x88888888, 0.0125);
         
         const geo = new THREE.TorusGeometry( torus_size, torus_width * Math.sqrt(3), 16, torus_angle);
-        const mat = new THREE.MeshStandardMaterial({side: THREE.DoubleSide});
+        const mat = new THREE.MeshStandardMaterial({side: THREE.DoubleSide, transparent: true, overdraw: true});
         mat.map = textureLoader.load("img/tester.jpg");
-        mat.bumpMap = mat.map;
-        mat.bumpscale = 0.2;
+        //mat.bumpMap = mat.map;
+        //mat.bumpscale = 0.2;
         mat.map.wrapS = THREE.RepeatWrapping;
         mat.map.wrapT = THREE.RepeatWrapping;
-        mat.map.repeat.set(torus_size / 2, 1);
-        mat.bumpMap.wrapS = THREE.RepeatWrapping;
+        mat.map.repeat.set(torus_size / 2, 16);
+        /*mat.bumpMap.wrapS = THREE.RepeatWrapping;
         mat.bumpMap.wrapT = THREE.RepeatWrapping;
-        mat.bumpMap.repeat.set(torus_size / 2, 1);
+        mat.bumpMap.repeat.set(torus_size / 2, 1);*/
         
         const tor = new THREE.Mesh(geo, mat);
         tor.position.y -= - torus_width * Math.sqrt(3) / 2 + torus_size / 2 + 1;
         tor.position.x += torus_size * Math.sqrt(3) / 2 + 13;
         tor.rotation.x -= Math.PI / 2;
         tor.rotation.y += Math.PI / 6;
-              
         scene.add(tor);
         arr.push(tor);
+
+
+        const skySize = 100;
+        const skyGeometry = new THREE.CylinderGeometry( skySize, skySize, 2000, 32 );
+        const skyMaterial = new THREE.MeshBasicMaterial({side: THREE.DoubleSide});
+        skyMaterial.map = textureLoader.load("img/sky.jpg");
+        skyMaterial.map.wrapS = THREE.MirroredRepeatWrapping;
+        skyMaterial.map.wrapT = THREE.MirroredRepeatWrapping;
+        skyMaterial.map.repeat.set(2, 2);
+        const mats = [
+        	skyMaterial,
+        	new THREE.MeshBasicMaterial({color: 0, transparent: true, opacity: 0}),
+        	new THREE.MeshBasicMaterial({color: 0, transparent: true, opacity: 0})
+        ];
+        const sky = new THREE.Mesh(skyGeometry, new THREE.MeshFaceMaterial(mats));
+
+        sky.position.y += skySize * 2 - 75;
+        sky.rotation.y += Math.PI;
+        sky.rotation.x += Math.PI / 2;
+        
+        const Sky = new THREE.Group();
+        Sky.add(sky);
+        Sky.rotation.z += 0.3;
+        
+        scene.add(Sky);
+        arr.push(sky);/**/
+        
+              
         
         update(); //繰り返しイベントへ 
 
@@ -189,6 +211,14 @@
           requestAnimationFrame(update);
 
           torus.rotation.z -= 0.02;
+          
+          sky.rotation.y += 0.00105;
+          
+          let d = sky.rotation.y - Math.PI;
+          
+          
+          scene.fog.density = 0.00625 + 0.01875 * Math.sin(d / 2) * Math.sin(d / 2);
+          
         }
       }
     </script>
