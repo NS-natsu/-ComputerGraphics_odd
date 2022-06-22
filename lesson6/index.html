@@ -157,7 +157,7 @@
         test_ = torus;
         
         const geo = new THREE.TorusGeometry( torus_size, torus_width * Math.sqrt(3), 16, torus_angle);
-        const mat = new THREE.MeshStandardMaterial({side: THREE.DoubleSide);
+        const mat = new THREE.MeshStandardMaterial({side: THREE.DoubleSide});
         mat.map = textureLoader.load("img/stone-bump.jpg");
         mat.bumpMap = mat.map;
         mat.bumpscale = 0.2;
