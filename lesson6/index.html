@@ -132,7 +132,7 @@
         const material = new THREE.MeshStandardMaterial();
 
 
-        material.map = textureLoader.load("img/stone-bump.jpg");
+        material.map = textureLoader.load("img/road.jpg");
         /*material.bumpMap = bump;
         material.bumpscale = 0.2;*/
         material.map.wrapS = THREE.RepeatWrapping;
@@ -157,8 +157,8 @@
         test_ = torus;
         
         const geo = new THREE.TorusGeometry( torus_size, torus_width * Math.sqrt(3), 16, torus_angle);
-        const mat = new THREE.MeshStandardMaterial();
-        mat.map = textureLoader.load("img/road.jpg");
+        const mat = new THREE.MeshStandardMaterial({side: THREE.DoubleSide);
+        mat.map = textureLoader.load("img/stone-bump.jpg");
         mat.bumpMap = mat.map;
         mat.bumpscale = 0.2;
         mat.map.wrapS = THREE.RepeatWrapping;
