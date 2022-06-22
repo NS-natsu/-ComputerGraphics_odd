@@ -132,7 +132,7 @@
         const material = new THREE.MeshStandardMaterial();
 
 
-        material.map = textureLoader.load("img/road.jpg");
+        material.map = textureLoader.load("img/stone-bump.jpg");
         /*material.bumpMap = bump;
         material.bumpscale = 0.2;*/
         material.map.wrapS = THREE.RepeatWrapping;
@@ -150,7 +150,7 @@
         torus.receiveShadow = true; //影がつく
         scene.add( torus );
 
-        scene.fog = new THREE.FogExp2(0x555555, 0.025);
+        //scene.fog = new THREE.FogExp2(0x555555, 0.025);
 
         test = geometry.attributes.normal;
         testm = material;
