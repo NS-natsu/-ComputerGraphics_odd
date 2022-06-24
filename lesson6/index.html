@@ -5,6 +5,13 @@
     <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
   </head>
 <body>
+
+<script src="js/road.js"></script>
+<script src="js/car/body.js"></script>
+<script src="js/car/mirror.js"></script>
+<script src="js/car/wheel.js"></script>
+<script src="js/car/car.js"></script>
+	
  <script>
 	// ページの読み込みを待つ
 	window.addEventListener('DOMContentLoaded', init);
@@ -17,526 +24,6 @@
 	const arr = new Array();
 
 	const wheels = [];
-		
-	function road(scene){
-		const textureLoader = new THREE.TextureLoader();
-	    const road = new THREE.Object3D();
-
-        const torus_size = 10000;
-        const torus_width = 23;
-        const torus_angle = torus_size / 10;
-
-        let mesh;
-        let material = new THREE.MeshStandardMaterial();
-        let geometry = new THREE.TorusGeometry( torus_size, torus_width, 3, torus_angle);
-
-        const getSize = function(c){
-        	return Math.sqrt(c.x * c.x + c.y * c.y + c.z * c.z);
-        }
-	    const inner = function(a, b){
-	    	return a.x * b.x + a.y * b.y + a.z * b.z;
-        }
-        const cross = function(a, b){
-        	return {
-            	x : a.y * b.z - a.z * b.y,
-            	y : a.z * b.x - a.x * b.z,
-            	z : a.x * b.y - a.y * b.x,
-        	};
-        }
-        
-	    let tmp;
-	    
-        for(let i = 0; i < 3 * torus_angle; i+= 3){
-        	let tmp1 = {
-            	x:geometry.attributes.normal.array[i + 0],
-            	y:geometry.attributes.normal.array[i + 1],
-            	z:geometry.attributes.normal.array[i + 2]
-			};
-			let tmp2 = {
-            	x:geometry.attributes.normal.array[i + 3],
-            	y:geometry.attributes.normal.array[i + 4],
-            	z:geometry.attributes.normal.array[i + 5]
-          	};
-
-	        tmp1.x -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 0];
-          	tmp1.y -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 1];
-          	tmp1.z -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 2];
-
-          	tmp2.x -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 0];
-          	tmp2.y -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 1];
-          	tmp2.z -= geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 2];
-
-          tmp = cross(tmp1, tmp2);
-
-          geometry.attributes.normal.array[i + 0] = tmp.x;
-          geometry.attributes.normal.array[i + 1] = tmp.y;
-	          geometry.attributes.normal.array[i + 2] = tmp.z;
-	          geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 0] = tmp.x;
-	          geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 1] = tmp.y;
-	          geometry.attributes.normal.array[i + 3 * (torus_angle + 1) + 2] = tmp.z;
-	        }
-	        geometry.attributes.normal.array[3 * torus_angle + 0] = tmp.x;
-	        geometry.attributes.normal.array[3 * torus_angle + 1] = tmp.y;
-	        geometry.attributes.normal.array[3 * torus_angle + 2] = tmp.z;
-	        geometry.attributes.normal.array[3 * torus_angle + 3 * (torus_angle + 1) + 0] = tmp.x;
-	        geometry.attributes.normal.array[3 * torus_angle + 3 * (torus_angle + 1) + 1] = tmp.y;
-	        geometry.attributes.normal.array[3 * torus_angle + 3 * (torus_angle + 1) + 2] = tmp.z;
-	        //geometry.attributes.normal.normalized = true;
-	        
-
-
-	        material.map = textureLoader.load("img/road.jpg");
-	        /*material.bumpMap = bump;
-	        material.bumpscale = 0.2;*/
-	        material.map.wrapS = THREE.RepeatWrapping;
-	        material.map.wrapT = THREE.RepeatWrapping;
-	        material.map.repeat.set(torus_size / 8, 3);/**/
-	        /*material.bumpMap.wrapS = THREE.RepeatWrapping;
-	        material.bumpMap.wrapT = THREE.RepeatWrapping;
-	        material.bumpMap.repeat.set(1, 10);*/
-	        mesh = new THREE.Mesh( geometry, material );
-	        
-	        mesh.position.y -= torus_width / 2 + torus_size / 2 + 1;
-	        mesh.position.x += torus_size * Math.sqrt(3) / 2 + 13;
-	        mesh.rotation.x -= Math.PI / 2;
-	        mesh.rotation.y += Math.PI / 6;
-	        //torus.receiveShadow = true; //影がつく
-	        road.add(mesh);
-	        
-	        const torus_width2 = 20 * 3 / 2 - 7;
-	        
-	        geometry = new THREE.TorusGeometry( torus_size, torus_width2, 6, torus_angle);
-	        material = new THREE.MeshStandardMaterial({side: THREE.DoubleSide, transparent: true, overdraw: true});
-	        material.map = textureLoader.load("img/EOlMt9nPtM1zjeN1655908340_1655908353.png");
-	        material.bumpMap = textureLoader.load("img/tester-bump.jpg");
-	        material.bumpscale = 0.2;
-	        material.map.wrapS = THREE.RepeatWrapping;
-	        material.map.wrapT = THREE.RepeatWrapping;
-	        material.map.repeat.set(torus_size / 16, 1);
-	        material.bumpMap.wrapS = THREE.RepeatWrapping;
-	        material.bumpMap.wrapT = THREE.RepeatWrapping;
-	        material.bumpMap.repeat.set(torus_size / 16, 1);
-	        
-	        mesh = new THREE.Mesh(geometry, material);
-	        mesh.position.y -= - torus_width2 / 2 + torus_size / 2 + 1;
-	        mesh.position.x += torus_size * Math.sqrt(3) / 2 + 13;
-	        mesh.rotation.x -= Math.PI / 2;
-	        mesh.rotation.y += Math.PI / 6;
-	        road.add(mesh);
-	        scene.add(road);
-
-	        return road;
-		}
-	
-		function rim(){
-			const wheel = new THREE.Group();
-			const textureLoader = new THREE.TextureLoader();
-			
-			const size = 5;
-			const angle = 16;
-			const tick = 2;
-
-			const vRad = .6;
-			const hRad = 3;
-
-			let mesh = new THREE.Mesh(
-				new THREE.TorusGeometry( size, 1, angle, angle ),
-				new THREE.MeshStandardMaterial()
-			);
-
-			mesh.material.map = textureLoader.load("img/wheel_rubber.jpg");
-			mesh.material.bumpMap = textureLoader.load("img/wheel_rubber-bump.jpg");
-			mesh.material.bumpscale = 0.2;
-			
-			const usingArr = mesh.geometry.attributes.position.array;
-			for(let i = 0; i <= angle; i++){
-				const tmp = {
-					x : Math.cos(i / angle * 2 * Math.PI),
-					y : Math.sin(i / angle * 2 * Math.PI),
-					z : 0
-				}
-				for(let j = 0; j <= angle; j++){
-					const pos = i*3 + j*3*(angle+1);
-					const tmp2 = {
-						x : usingArr[pos + 0],
-						y : usingArr[pos + 1],
-						z : usingArr[pos + 2]
-					};
-					tmp2.x -= size * tmp.x;
-					tmp2.y -= size * tmp.y;
-					tmp2.z -= size * tmp.z;
-					tmp2.x *= vRad;
-					tmp2.y *= vRad;
-					tmp2.z *= hRad
-
-					usingArr[pos + 0] = tmp2.x + size * tmp.x;
-					usingArr[pos + 1] = tmp2.y + size * tmp.y;
-					usingArr[pos + 2] = tmp2.z + size * tmp.z;
-				}
-				for(let j = 0; j <= angle; j++){
-					const pos = i*3 + j*3*(angle+1);
-					const d = {
-						x: tick * Math.cos(i / angle * 2 * Math.PI) / 2,
-						y: tick * Math.sin(i / angle * 2 * Math.PI) / 2,
-						z: 0
-					}
-					const k = {
-						pos: Math.cos(j / angle * 2 * Math.PI),
-						flag: false
-					}
-					if(k.pos < 0){
-						if(-Math.sqrt(3) / 2 <= k.pos){
-							d.x *= -1;
-							d.y *= -1;
-						} else k.flag = true;
-					}
-					usingArr[pos + 0] += d.x;
-					usingArr[pos + 1] += d.y;
-					usingArr[pos + 2] += d.z;
-					if(k.flag){
-						if(k.pos == -1){
-							usingArr[pos + 0] += d.x;
-							usingArr[pos + 1] += d.y;
-							usingArr[pos + 2] += d.z;
-						}else if(j / angle < 1/ 2){
-							let p = i*3 + (j - 2)*3*(angle+1);
-							usingArr[pos + 0] = usingArr[p + 0] + d.x;
-							usingArr[pos + 1] = usingArr[p + 1] + d.y;
-							usingArr[pos + 2] = usingArr[p + 2] + d.z;
-						}else {
-							let p = i*3 + (j + 2)*3*(angle+1);
-							usingArr[pos + 0] = usingArr[p + 0] + d.x;
-							usingArr[pos + 1] = usingArr[p + 1] + d.y;
-							usingArr[pos + 2] = usingArr[p + 2] + d.z;
-						}
-					}
-				}
-			}
-
-			wheel.add( mesh );
-			//mesh.rotation.set(0, 0, Math.PI / 2);
-						
-			let tmp = {
-				list: new Array(),
-				
-				flag: false
-			}
-			
-			for(let i = 0; i <= angle; i++){
-				const k = Math.cos(i / angle * 2 * Math.PI);
-				
-				if(tmp.flag === false && k < -Math.sqrt(3) / 2){
-					tmp.flag = true;
-					for(let j = 0; j <= angle; j++){
-						tmp.list.push(usingArr[(i-2)*3*(angle+1) + j*3 + 1]);
-						tmp.list.push(usingArr[(i-2)*3*(angle+1) + j*3 + 2] - .2);
-						tmp.list.push(usingArr[(i-2)*3*(angle+1) + j*3 + 0]);
-					}
-				}else if(tmp.flag === true && -Math.sqrt(3) / 2 <= k){
-					tmp.flag = false;
-					for(let j = 0; j <= angle; j++){
-						tmp.list.push(usingArr[(i+1)*3*(angle+1) + j*3 + 1]);
-						tmp.list.push(usingArr[(i+1)*3*(angle+1) + j*3 + 2]);
-						tmp.list.push(usingArr[(i+1)*3*(angle+1) + j*3 + 0]);
-					}
-				}
-			}
-			
-			const mats = [
-				new THREE.MeshPhysicalMaterial( {
-					color: 0xffffff, metalness: .1, roughness: 0.5,
-					side: THREE.DoubleSide
-				} ),
-				new THREE.MeshPhysicalMaterial( {
-					metalness: .4, roughness: 0.5,
-					side: THREE.DoubleSide
-				} ),
-				null
-			];
-			mats[2] = mats[1];
-			mats[1].map = textureLoader.load("img/IMG_0365.png");
-			mats[1].bumpMap = textureLoader.load("img/NormalMap2.jpg");
-			mats[1].bumpscale;
-			mats[1].transparent = true;
-			mats[1].overdraw = true;
-
-			mesh = new THREE.Mesh(
-				new THREE.CylinderGeometry( 1, 1, hRad, angle ),
-				new THREE.MeshFaceMaterial(mats)
-			);
-			
-			let pos = 0;
-			for(; pos < 6*(angle+1); pos++){
-				mesh.geometry.attributes.position.array[pos] = tmp.list[pos];
-			}
-			
-			let off = pos;
-			for(let i = 0; i < angle * 3; i+=3){
-				mesh.geometry.attributes.position.array[off + i + 0] = 0;
-				mesh.geometry.attributes.position.array[off + i + 1] = tmp.list[1];
-				mesh.geometry.attributes.position.array[off + i + 2] = 0;
-			}
-			off += angle * 3;
-			for(pos = 0; pos < 3*(angle+1); pos++){
-				mesh.geometry.attributes.position.array[pos + off] = tmp.list[pos];
-			}
-			for(let i = 0; i < angle * 3; i+=3){
-				mesh.geometry.attributes.position.array[off + pos + i + 0] = 0;
-				mesh.geometry.attributes.position.array[off + pos + i + 1] = -tmp.list[1];
-				mesh.geometry.attributes.position.array[off + pos + i + 2] = 0;
-			}
-			off += angle * 3;
-			for(; pos < 6*(angle+1); pos++){
-				mesh.geometry.attributes.position.array[pos + off] = tmp.list[pos];
-			}
-			
-			/*pos = 6*(angle+1) + angle * 3;
-			for(let i = 0; i < 3*(angle+1);  i += 3){
-				const rad = i / angle / 3 * 2 * Math.PI;
-				mesh.geometry.attributes.normal.array[pos + i + 0] = -Math.sin(rad);
-				mesh.geometry.attributes.normal.array[pos + i + 2] = -Math.cos(rad);
-			}
-			pos += 3*(angle+1) + 3 * angle;
-			for(let i = 0; i < 3*(angle+1);  i += 3){
-				const rad = i / angle / 3 * 2 * Math.PI;
-				mesh.geometry.attributes.normal.array[pos + i + 0] = -Math.sin(rad);
-				mesh.geometry.attributes.normal.array[pos + i + 2] = -Math.cos(rad);
-			}*/
-			mesh.rotation.x += Math.PI / 2;
-			wheel.add(mesh);
-			mesh = new THREE.Mesh(
-				new THREE.CylinderGeometry( .5, .5, 2 * tmp.list[1] - .1, 32 ),
-				new THREE.MeshPhysicalMaterial( {color: 0xffffff, metalness: .1, roughness: 0.5} )
-			);
-			mesh.rotation.x += Math.PI / 2;
-			wheel.add(mesh);
-			return wheel;
-		}
-
-		function car(scene) {
-			const textureLoader = new THREE.TextureLoader();
-			
-			// materials
-			const bodyMaterial = new THREE.MeshPhysicalMaterial( {
-				color: 0xff0000, metalness: 1.0, roughness: 0.5, clearcoat: 1.0, clearcoatRoughness: 0.03, sheen: 0.5
-			} );
-
-			//鏡
-			const detailsMaterial = new THREE.MeshStandardMaterial( {
-				color: 0xffffff, metalness: 1.0, roughness: 0.5
-			} );
-
-			//窓
-			const glassMaterial = new THREE.MeshPhysicalMaterial( {
-				color: 0xffffff, metalness: 0.25, roughness: 0, transmission: 1.0, side: THREE.DoubleSide
-			} );
-			
-			const vehicle = {
-				h : 2,
-				w : 1.7,
-				l : 4.7,
-				f : 1
-			};
-			let tmp;
-			const body = new THREE.Group();
-			let mesh = new THREE.Mesh(
-					new THREE.BoxGeometry(vehicle.l, vehicle.h / 2, vehicle.w),
-					bodyMaterial
-			);
-			
-			mesh.material.side = THREE.DoubleSide;
-			//右　左　上　下　前　後
-			//バンパー前後　フロント前後　側面
-			tmp = mesh.geometry.attributes.position.array;
-			mesh.geometry.attributes.position.array[24] = vehicle.l / 2 - vehicle.f;
-
-			mesh.geometry.attributes.position.array[30] = vehicle.l / 2 - vehicle.f - .1;
-			mesh.geometry.attributes.position.array[31] += .2;
-			mesh.geometry.attributes.position.array[32] = 0;
-			
-			mesh.geometry.attributes.position.array[35] = 0;
-
-			mesh.geometry.attributes.position.array[36] = vehicle.l / 2 - vehicle.f;
-			mesh.geometry.attributes.position.array[37] += 1;
-			//mesh.geometry.attributes.position.array[38] = 0;
-			
-			//mesh.geometry.attributes.position.array[39] = 0;
-			mesh.geometry.attributes.position.array[40] += 1;
-			//mesh.geometry.attributes.position.array[41] = 0;
-
-			mesh.geometry.attributes.position.array[42] = vehicle.l / 2 - vehicle.f - .1;
-			mesh.geometry.attributes.position.array[43] += 1.2;
-			mesh.geometry.attributes.position.array[44] = 0;
-			
-			//mesh.geometry.attributes.position.array[45] = 0;
-			mesh.geometry.attributes.position.array[46] += 1;
-			mesh.geometry.attributes.position.array[47] = 0;
-
-
-			body.add(mesh);
-			arr.push(mesh);
-			
-
-			mesh = new THREE.Mesh(
-					new THREE.BoxGeometry(vehicle.l - vehicle.f, vehicle.h / 2, vehicle.w),
-					new THREE.MeshFaceMaterial([
-						glassMaterial,
-						glassMaterial,
-						bodyMaterial,
-						new THREE.MeshBasicMaterial({color: 0xdddddd}),
-						glassMaterial,
-						glassMaterial
-					])
-					//bodyMaterial
-			);
-			mesh.material.side = THREE.DoubleSide;
-			mesh.rotation.z += 0.01;
-			mesh.position.x -= vehicle.f / 2 + .01;
-			mesh.position.y += vehicle.h / 2 - .01;
-			
-
-			mesh.geometry.attributes.position.array[36];// = tmp[21];
-			mesh.geometry.attributes.position.array[37]// = tmp[22];
-			mesh.geometry.attributes.position.array[38];// = tmp[23];
-			
-
-			mesh.geometry.attributes.position.array[37] -= 1;
-			mesh.geometry.attributes.position.array[39] += vehicle.f;
-			mesh.geometry.attributes.position.array[40] -= 1;
-			mesh.geometry.attributes.position.array[43] -= 1;
-			mesh.geometry.attributes.position.array[45] += vehicle.f;
-			mesh.geometry.attributes.position.array[46] -= 1;
-
-			mesh.geometry.attributes.position.array[0] -= .5;
-			mesh.geometry.attributes.position.array[3] -= .5;
-			mesh.geometry.attributes.position.array[27] -= .5;
-			mesh.geometry.attributes.position.array[33] -= .5;
-			mesh.geometry.attributes.position.array[51] -= .5;
-			mesh.geometry.attributes.position.array[60] -= .5;
-
-			mesh.geometry.attributes.position.array[2] -= .1;
-			mesh.geometry.attributes.position.array[35] -= .1;
-			mesh.geometry.attributes.position.array[53] -= .1;
-
-			mesh.geometry.attributes.position.array[5] += .1;
-			mesh.geometry.attributes.position.array[29] += .1;
-			mesh.geometry.attributes.position.array[62] += .1;
-			
-			
-
-			mesh.geometry.attributes.position.array[15] += .1;
-			mesh.geometry.attributes.position.array[30] += .1;
-			mesh.geometry.attributes.position.array[48] += .1;
-
-			mesh.geometry.attributes.position.array[12] += .1;
-			mesh.geometry.attributes.position.array[24] += .1;
-			mesh.geometry.attributes.position.array[63] += .1;
-
-			mesh.geometry.attributes.position.array[17] -= .1;
-			mesh.geometry.attributes.position.array[32] -= .1;
-			mesh.geometry.attributes.position.array[50] -= .1;
-
-			mesh.geometry.attributes.position.array[14] += .1;
-			mesh.geometry.attributes.position.array[26] += .1;
-			mesh.geometry.attributes.position.array[65] += .1;
-			
-			body.add(mesh);
-			
-			scene.add(body);
-			arr.push(mesh);
-
-			body.position.y += .5;
-			body.position.x += 1.2;
-						
-			let wheel = rim();
-			scene.add(wheel);
-			wheel.position.z += .75;
-			wheel.rotation.y += Math.PI;
-			wheel.scale.set(.075, .075, .05);
-			return null;
-
-			//const mesh = new THREE.Mesh(
-			//	new THREE.PlaneGeometry( 0.655 * 4, 1.3 * 4 ),
-			//	detailsMaterial
-			//);
-			
-			/*let angle = 16;
-			let size = 2;
-			const mesh = new THREE.Mesh(
-				new THREE.CylinderGeometry( 2, 2, size, angle ),
-				new THREE.MeshStandardMaterial( {color: 0xf0ff0f, side: THREE.DoubleSide} )
-			);
-			let pos = 1;
-			for(; pos < 3 * (angle + 1); pos += 3){
-				mesh.geometry.attributes.normal.array[pos] += 1;
-			}
-			for(; pos < 2 * 3 * (angle + 1); pos += 3){
-				mesh.geometry.attributes.normal.array[pos] -= 1;
-			}
-			pos -= 1;
-			const d = Math.PI / angle
-			for(let i = 0; i < angle; i += 1){
-				let z = Math.cos((1 + 2 * i) * d);
-				let x = Math.sin((1 + 2 * i) * d);
-				//mesh.geometry.attributes.normal.array[pos + 0] = x;
-				//mesh.geometry.attributes.normal.array[pos + 1] -= size / 4;
-				//mesh.geometry.attributes.normal.array[pos + 2] = z;
-				mesh.geometry.attributes.position.array[pos + 1] -= size / 4;
-				pos += 3;
-			}*/
-			
-			//let wheel = rim();
-			//scene.add(wheel);
-			//return wheel;
-
-			// Car
-/*
-			const shadow = new THREE.TextureLoader().load( 'img/ferrari_ao.png' );
-
-			const dracoLoader = new DRACOLoader();
-			dracoLoader.setDecoderPath( 'js/libs/draco/gltf/' );
-
-			const loader = new GLTFLoader();
-			loader.setDRACOLoader( dracoLoader );
-
-			loader.load( 'models/gltf/ferrari.glb', function ( gltf ) {
-
-				const carModel = gltf.scene.children[ 0 ];
-
-				carModel.getObjectByName( 'body' ).material = bodyMaterial;
-
-				carModel.getObjectByName( 'rim_fl' ).material = detailsMaterial;
-				carModel.getObjectByName( 'rim_fr' ).material = detailsMaterial;
-				carModel.getObjectByName( 'rim_rr' ).material = detailsMaterial;
-				carModel.getObjectByName( 'rim_rl' ).material = detailsMaterial;
-				carModel.getObjectByName( 'trim' ).material = detailsMaterial;
-
-				carModel.getObjectByName( 'glass' ).material = glassMaterial;
-
-				wheels.push(
-					carModel.getObjectByName( 'wheel_fl' ),
-					carModel.getObjectByName( 'wheel_fr' ),
-					carModel.getObjectByName( 'wheel_rl' ),
-					carModel.getObjectByName( 'wheel_rr' )
-				);
-
-				// shadow
-				const mesh = new THREE.Mesh(
-					new THREE.PlaneGeometry( 0.655 * 4, 1.3 * 4 ),
-					new THREE.MeshBasicMaterial( {
-						map: shadow, blending: THREE.MultiplyBlending, toneMapped: false, transparent: true
-					} )
-				);
-				mesh.rotation.x = - Math.PI / 2;
-				mesh.renderOrder = 2;
-				carModel.add( mesh );
-
-				scene.add( carModel );
-
-			} );
-			*/
-
-		}
 
       function init() {
 		// サイズを指定
@@ -610,7 +97,7 @@
 		mats[2] = mats[1];
 		const sky = new THREE.Mesh(skyGeometry, new THREE.MeshFaceMaterial(mats));
 
-		sky.rotation.x += Math.PI / 2;
+		sky.rotation.x += Math.PI / 4;
         
 		const Sky = new THREE.Group();
 		Sky.add(sky);
@@ -619,8 +106,8 @@
 		Sky.rotation.z -= 0.5;
 		Sky.rotation.x -= 0.5;
         
-		//scene.add(Sky);
-		arr.push(sky);/**/
+		scene.add(Sky);
+		arr.push(sky);
         
 		/*light = new THREE.SpotLight(0xFFFFFF, 1, 60, Math.PI / 4, 10, 0.5);
 		light.position.set(-4, 23, 0);
@@ -633,17 +120,20 @@
 		//light = new THREE.AmbientLight(0xFFFFFF, 1.0);
 		//scene.add(light);
 		
-		scene.add(new THREE.AmbientLight(0xFFFFFF, 1.0));
+		const ambient = new THREE.AmbientLight(0xFFFFFF, .2)
+		
+		scene.add(ambient);
 		
 
 		scene.background = new THREE.Color( 0xffffff );
 	    
 	    
-		const Road = road(scene);
 		const Car = car(scene);
-		arr.push(Road);
-		arr.push(Car);
+		const Road = road(scene);
+		//arr.push(Road);
+		//arr.push(Car);
               
+		arr.push(ambient);
         
 		update(); //繰り返しイベントへ 
 
@@ -655,6 +145,9 @@
 			light.position.x = camera.position.x;
 			light.position.y = camera.position.y;
 			light.position.z = camera.position.z;
+			/*return;
+			
+			
 			arr[2].geometry.attributes.position.needsUpdate =true;
 			arr[2].geometry.attributes.normal.needsUpdate =true;
 			if(event){
@@ -664,11 +157,14 @@
 
 			for(let i = 0; i < Road.children.length; i++) {
 				Road.children[i].rotation.z -= 0.05
-			}
+			}*/
           
-			//sky.rotation.y += 0.0005;
+			sky.rotation.y += 0.0005;
 			let d = sky.rotation.y;
-			scene.fog.density = 0.0009765625 + 0.0068359375 * Math.sin(d / 2) * Math.sin(d / 2);
+			//scene.fog.density = 0.0009765625 + 0.0068359375 * Math.sin(d / 2) * Math.sin(d / 2);
+
+			//min .1 max .6
+			ambient.intensity = .35 + .25 * Math.cos(d + Math.PI * 3 / 4);
         }
       }
     </script>
