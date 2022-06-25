@@ -184,15 +184,14 @@ function createBody(vehicle){
 				glassMaterial,
 				glassMaterial,
 				bodyMaterial,
-				new THREE.MeshStandardMaterial({color: 0}),//下側
+				new THREE.MeshStandardMaterial({color: 0, opacity: 0, transparent: true}),//下側
 				glassMaterial,
 				glassMaterial
 			])
 	);
 	
-	mesh.position.z += 0.01;
 	mesh.position.x -= vehicle.f / 2;
-	mesh.position.y += vehicle.h / 2 - .01;	
+	mesh.position.y += vehicle.h / 2;
 
 	mesh.geometry.attributes.position.array[37] -= vehicle.h * vehicle.u - .1;
 	mesh.geometry.attributes.position.array[39] += vehicle.f;
@@ -315,7 +314,7 @@ function createBody(vehicle){
 	using = mesh.geometry.attributes;
 	/** 中身*/
 	mesh = new THREE.Mesh(
-			new THREE.BoxGeometry(vehicle.l - vehicle.f - .03, vehicle.h * vehicle.u - 0.2, vehicle.w - .02),
+			new THREE.BoxGeometry(vehicle.l - vehicle.f - .001, vehicle.h * vehicle.u - 0.2, vehicle.w - .01),
 			//new THREE.BoxGeometry(vehicle.l - vehicle.f,  * vehicle.t, vehicle.w),
 			new THREE.MeshFaceMaterial([
 				new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide}),
@@ -330,12 +329,22 @@ function createBody(vehicle){
 		mesh.geometry.attributes.position.array[24 + i] = using.position.array[24 + i];
 		mesh.geometry.attributes.normal.array[24 + i] = using.normal.array[24 + i];
 	}
+	
+	
+	mesh.geometry.attributes.position.array[6 + 1] += .35;
+	mesh.geometry.attributes.position.array[9 + 1] += .35;
+	
 	mesh.geometry.attributes.position.array[24 + 1] += vehicle.h * vehicle.t + .09;
 	mesh.geometry.attributes.position.array[27 + 0] -= .03;
 	mesh.geometry.attributes.position.array[27 + 1] += vehicle.h * vehicle.t + .09;
 	mesh.geometry.attributes.position.array[30 + 1] += vehicle.h * vehicle.t + .09;
 	mesh.geometry.attributes.position.array[33 + 0] -= .03;
 	mesh.geometry.attributes.position.array[33 + 1] += vehicle.h * vehicle.t + .09;
+	
+	mesh.geometry.attributes.position.array[36 + 0] += 1.025;
+	mesh.geometry.attributes.position.array[39 + 0] -= .25;
+	mesh.geometry.attributes.position.array[42 + 0] += 1.025;
+	mesh.geometry.attributes.position.array[45 + 0] -= .25;
 
 	mesh.position.x -= vehicle.f / 2;
 	mesh.position.y += .1;
@@ -349,8 +358,7 @@ function createBody(vehicle){
 	
 	using = mesh.geometry.attributes.position.array;
 	for(let i = 0; i < using.length; i+=3){
-		using[i + 0] = Math.abs(using[i + 0]);
-		using[i + 2] = Math.abs(using[i + 2]);
+		using[i] = Math.abs(using[i]);
 	}
 	for(let i = 0; i < 16; i++){
 		using[2*17*3 + 3*i + 0] = using[2*17*3 + 3 * 16 + 3 * i + 0];
@@ -365,8 +373,35 @@ function createBody(vehicle){
 	mesh.rotation.x -= Math.PI / 2;
 	mesh.rotation.y -= Math.PI / 2;
 
-	mesh.position.x += vehicle.l / 2 - vehicle.f + .1;
-	mesh.position.y -= .4;
+	mesh.position.x += vehicle.l / 2 - vehicle.f + .22;
+	mesh.position.y -= .5;
+	
+	body.add(mesh);
+	
+	mesh = new THREE.Mesh(
+		new THREE.CylinderGeometry(.5, .5, vehicle.w - .01, 16),
+		new THREE.MeshStandardMaterial({color: 0})
+	);
+	
+	using = mesh.geometry.attributes.position.array;
+	for(let i = 0; i < using.length; i+=3){
+		using[i] = Math.abs(using[i]);
+	}
+	for(let i = 0; i < 16; i++){
+		using[2*17*3 + 3*i + 0] = using[2*17*3 + 3 * 16 + 3 * i + 0];
+		using[2*17*3 + 3*i + 1] = using[2*17*3 + 3 * 16 + 3 * i + 1];
+		using[2*17*3 + 3*i + 2] = using[2*17*3 + 3 * 16 + 3 * i + 2];
+		
+		using[3*17*3 + 3 * 16 + 3*i + 0] = using[3*17*3 + 6 * 16 + 3 * i + 0];
+		using[3*17*3 + 3 * 16 + 3*i + 1] = using[3*17*3 + 6 * 16 + 3 * i + 1];
+		using[3*17*3 + 3 * 16 + 3*i + 2] = using[3*17*3 + 6 * 16 + 3 * i + 2];
+	}
+
+	mesh.rotation.x -= Math.PI / 2;
+	mesh.rotation.y -= Math.PI / 2;
+
+	mesh.position.x -= vehicle.l / 2 - vehicle.f + .25;
+	mesh.position.y -= .5;
 	
 	body.add(mesh);
 

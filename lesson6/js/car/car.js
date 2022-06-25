@@ -1,6 +1,6 @@
 const wheel = new Array();
 
-function car(scene) {
+function createCar(scene) {
 	const car = new THREE.Group();
 	const rim = new THREE.Group();
 	
@@ -15,7 +15,7 @@ function car(scene) {
 		u: .6
 	};
 	
-	car.add(createBody(vehicle));
+	//car.add(createBody(vehicle));
 	car.add(createMirror(vehicle));
 	
 	wheel.push(createRim());
