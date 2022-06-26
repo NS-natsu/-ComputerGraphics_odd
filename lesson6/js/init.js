@@ -127,6 +127,11 @@ function init() {
 		light.position.x = camera.position.x;
 		light.position.y = camera.position.y;
 		light.position.z = camera.position.z;
+		
+		for(let i = 0; i < Car.wheel.length; i++){
+			Car.wheel[i].rotation.z -= 0.05
+		}
+		
 		return;
 		
 		

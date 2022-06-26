@@ -1,10 +1,7 @@
-const wheel = new Array();
-
 function createCar(scene) {
 	const car = new THREE.Group();
-	const rim = new THREE.Group();
-	
-	
+	const wheel = new Array();
+		
 	const vehicle = {
 		h : 2,
 		w : 1.7,
@@ -15,18 +12,41 @@ function createCar(scene) {
 		u: .6
 	};
 	
-	//car.add(createBody(vehicle));
+	let mesh = createWindow(vehicle);
+	mesh.position.y += .5
+	car.add(mesh);
+
+	mesh = createInterior(vehicle, mesh.geometry.attributes);
+	mesh.position.y += .5;
+	car.add(mesh);
+	
+	mesh = createCover(vehicle);
+	mesh.position.x += vehicle.l / 2 - vehicle.f + .22;
+	mesh.position.y += .5;
+	car.add(mesh);
+	
+	mesh = createCover(vehicle);
+	mesh.position.x -= vehicle.l / 2 - vehicle.f + .25;
+	mesh.position.y += .5;
+	car.add(mesh);
+
+	
+	mesh = createBody(vehicle);
+	mesh.position.y += .5;
+	car.add(mesh);
+	
 	car.add(createMirror(vehicle));
+	
+	scene.add(car);
 	
 	wheel.push(createRim());
 	let len = wheel.length - 1;
 	
 	wheel[len].position.x -= 1.8;
 	wheel[len].position.z += .75;
-	wheel[len].rotation.y += Math.PI;
-	wheel[len].scale.set(.065, .065, .05);
+	wheel[len].scale.set(.065, .065, -.05);
 	
-	rim.add(wheel[len]);
+	car.add(wheel[len]);
 
 	wheel.push(createRim());
 	len = wheel.length - 1;
@@ -35,17 +55,16 @@ function createCar(scene) {
 	wheel[len].position.z -= .75;
 	wheel[len].scale.set(.065, .065, .05);
 	
-	rim.add(wheel[len]);
+	car.add(wheel[len]);
 
 	wheel.push(createRim());
 	len = wheel.length - 1;
 	
 	wheel[len].position.x += 1.75;
 	wheel[len].position.z += .75;
-	wheel[len].rotation.y += Math.PI;
-	wheel[len].scale.set(.065, .065, .05);
+	wheel[len].scale.set(.065, .065, -.05);
 	
-	rim.add(wheel[len]);
+	car.add(wheel[len]);
 
 	wheel.push(createRim());
 	len = wheel.length - 1;
@@ -54,9 +73,11 @@ function createCar(scene) {
 	wheel[len].position.z -= .75;
 	wheel[len].scale.set(.065, .065, .05);
 	
-	rim.add(wheel[len]);
+	car.add(wheel[len]);
 	
-	car.add(rim);
+	mesh = createSole(vehicle);
+	mesh.position.y -= .1;
+	car.add(mesh);
 	//car.rotation.x += Math.PI / 2;
 	
 	//car.position.x -= 8;
@@ -64,6 +85,10 @@ function createCar(scene) {
 	//car.scale.set(10, 10, 10);
 	
 	scene.add(car);
+	arr.push(car);
 	
-	return car;
+	return {
+		main: car,
+		wheel: wheel
+	};
 }
