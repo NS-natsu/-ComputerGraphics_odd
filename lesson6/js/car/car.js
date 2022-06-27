@@ -35,60 +35,113 @@ function createCar(scene) {
 	mesh.position.y += .5;
 	car.add(mesh);
 	
-	car.add(createMirror(vehicle));
 	
-	scene.add(car);
+	mesh = createMirror(vehicle);
+	car.add(mesh);
 	
 	wheel.push(createRim());
-	let len = wheel.length - 1;
+	wheel.push(createRim());
+	wheel.push(createRim());
+	wheel.push(createRim());
 	
-	wheel[len].position.x -= 1.8;
-	wheel[len].position.z += .75;
-	wheel[len].scale.set(.065, .065, -.05);
+	wheel[0].position.x -= 1.8;
+	wheel[0].position.z += .75;
+	wheel[0].scale.set(.065, .065, -.05);
+	car.add(wheel[0]);
 	
-	car.add(wheel[len]);
+	wheel[1].position.x -= 1.8;
+	wheel[1].position.z -= .75;
+	wheel[1].scale.set(.065, .065, .05);
+	
+	car.add(wheel[1]);
+	
+	wheel[2].position.x += 1.75;
+	wheel[2].position.z += .75;
+	wheel[2].scale.set(.065, .065, -.05);
+	car.add(wheel[2]);
 
-	wheel.push(createRim());
-	len = wheel.length - 1;
-	
-	wheel[len].position.x -= 1.8;
-	wheel[len].position.z -= .75;
-	wheel[len].scale.set(.065, .065, .05);
-	
-	car.add(wheel[len]);
-
-	wheel.push(createRim());
-	len = wheel.length - 1;
-	
-	wheel[len].position.x += 1.75;
-	wheel[len].position.z += .75;
-	wheel[len].scale.set(.065, .065, -.05);
-	
-	car.add(wheel[len]);
-
-	wheel.push(createRim());
-	len = wheel.length - 1;
-	
-	wheel[len].position.x += 1.75;
-	wheel[len].position.z -= .75;
-	wheel[len].scale.set(.065, .065, .05);
-	
-	car.add(wheel[len]);
+	wheel[3].position.x += 1.75;
+	wheel[3].position.z -= .75;
+	wheel[3].scale.set(.065, .065, .05);
+	car.add(wheel[3]);
 	
 	mesh = createSole(vehicle);
 	mesh.position.y -= .1;
 	car.add(mesh);
+	
+	mesh = createFrontChair();
+	mesh.position.y += .85;
+	mesh.position.z += .4; 
+	mesh.rotation.y += Math.PI;
+	mesh.scale.set(.4, .5, .35);
+	car.add(mesh);
+	
+	mesh = createFrontChair();
+	mesh.position.y += .85;
+	mesh.position.z -= .4; 
+	mesh.rotation.y += Math.PI;
+	mesh.scale.set(.4, .5, .35);
+	car.add(mesh);
+	
+	mesh = createRearChair();
+	mesh.position.x -= 1.2;
+	mesh.position.y += .85;
+	mesh.rotation.y += Math.PI;
+	mesh.scale.set(.4, .5, .4);
+	car.add(mesh);
+	
+	mesh = createHandle();
+	/*mesh.position.x -= 1.2;
+	mesh.position.y += .85;
+	mesh.rotation.y += Math.PI;
+	mesh.scale.set(.4, .5, .4);*/
+	//car.add(mesh);
+	
 	//car.rotation.x += Math.PI / 2;
 	
 	//car.position.x -= 8;
 	//car.position.y -= 5;
 	//car.scale.set(10, 10, 10);
 	
-	scene.add(car);
-	arr.push(car);
+	//ライト
+	const light = new Array();
+	light.push(new THREE.SpotLight(0xffffff, 2, 50, Math.PI / 5, 0.2));
+	light.push(new THREE.SpotLight(0xffffff, 2, 50, Math.PI / 5, 0.2));
+
+	light[0].position.set(0,0,0);
+	light[0].position.x += vehicle.l / 2;
+	light[0].position.y += vehicle.h * vehicle.u * .625;
+	light[0].position.z += vehicle.w / 2 * .8;
+	light[0].castShadow = true;
+	
+	light[1].position.set(0,0,0);
+	light[1].position.x += vehicle.l / 2;
+	light[1].position.y += vehicle.h * vehicle.u * .625;
+	light[1].position.z -= vehicle.w / 2 * .8;
+	light[1].castShadow = true;
+	
+	for(let i = 0; i < light.length; i++){
+		mesh = new THREE.Mesh(
+			new THREE.BoxGeometry(.1, .1, .1),
+			new THREE.MeshBasicMaterial({opacity: 0, transparent: true, depthTest: false})
+		);
+		mesh.position.x = light[i].position.x + 1;
+		mesh.position.y = light[i].position.y - .3;
+		mesh.position.z = light[i].position.z;
+		
+		light[i].target = mesh;
+		light[i].target.updateMatrixWorld();
+		
+		car.add(light[i]);
+		car.add(mesh);
+	}
+	
+	
+	arr.push(light[0]);	
 	
 	return {
 		main: car,
-		wheel: wheel
+		wheel: wheel,
+		light: light
 	};
 }

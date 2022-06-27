@@ -19,7 +19,7 @@ function createSole(vehicle){
 	
 	tmp1[2] = tmp1[1] = tmp1[0] - .15;
 	tmp1[4] = tmp1[3] = tmp1[2] - .925;
-
+	
 	tmp1[9] = -tmp1[0];
 	tmp1[7] = tmp1[8] = tmp1[9] + .075;
 	tmp1[5] = tmp1[6] = tmp1[7] + .925;
@@ -28,7 +28,6 @@ function createSole(vehicle){
 	tmp2[2] = tmp2[0];
 	tmp2[3] = tmp2[1];
 	tmp2[4] = tmp2[2];
-	
 	for(let i = 0; i < 12 * 5; i += 3){
 		vert[i] = tmp1[(i / 6)|0];
 		vert[i+1] = 0;
@@ -60,16 +59,16 @@ function createWindow(vehicle){
 
 	//窓
 	const glassMaterial = new THREE.MeshPhysicalMaterial( {
-		color: 0xffffff, metalness: 0.25, roughness: 0, transmission: 1.0, side: THREE.DoubleSide
+		color: 0x0, metalness: 0.25, roughness: 0, side: THREE.DoubleSide,
+		opacity: .5, transparent: true//transmission: 1.0, 
 	} );
-	
 	const win = new THREE.Mesh(
 			new THREE.BoxGeometry(vehicle.l - vehicle.f, vehicle.h * vehicle.t, vehicle.w),
 			new THREE.MeshFaceMaterial([
 				glassMaterial,
 				glassMaterial,
 				bodyMaterial,
-				new THREE.MeshStandardMaterial({color: 0, opacity: 0, transparent: true}),//下側
+				new THREE.MeshLambertMaterial({side: THREE.BackSide}),
 				glassMaterial,
 				glassMaterial
 			])
@@ -80,6 +79,14 @@ function createWindow(vehicle){
 	
 	win.position.x -= vehicle.f / 2;
 	win.position.y += vehicle.h / 2;
+		
+	//下(後部床に持ってくる)
+	vert[36 + 0 + 1] += .5;
+	vert[36 + 3 + 0] -= vehicle.l - vehicle.f - .25;
+	vert[36 + 3 + 1] = vert[36 + 0 + 1];
+	vert[36 + 6 + 1] = vert[36 + 0 + 1];
+	vert[36 + 9 + 0] = vert[36 + 3 + 0];
+	vert[36 + 9 + 1] = vert[36 + 0 + 1];
 
 	vert[37] -= vehicle.h * vehicle.u - .1;
 	vert[39] += vehicle.f;
@@ -195,53 +202,10 @@ function createWindow(vehicle){
 	normal[33+ 0] += .3;
 	//normal[33+ 1];
 	normal[33+ 2] += .1;
-	
+
 	return win
 }
 
-function createInterior(vehicle, body){
-	const textureLoader = new THREE.TextureLoader();
-	const inter = new THREE.Mesh(
-			new THREE.BoxGeometry(vehicle.l - vehicle.f - .001, vehicle.h * vehicle.u - 0.2, vehicle.w - .01),
-			//new THREE.BoxGeometry(vehicle.l - vehicle.f,  * vehicle.t, vehicle.w),
-			new THREE.MeshFaceMaterial([
-				new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide}),
-				new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide}),
-				new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide}),
-				new THREE.MeshBasicMaterial({map: textureLoader.load("img/image146.jpg"), side: THREE.BackSide}),
-				new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide}),
-				new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide})
-			])
-	);
-	const vert = inter.geometry.attributes.position.array;
-	const normal = inter.geometry.attributes.normal.array;
-	
-	
-	for(let i = 0; i < 12; i++){
-		vert[24 + i] = body.position.array[24 + i];
-		normal[24 + i] = body.normal.array[24 + i];
-	}
-
-	vert[6 + 1] += .35;
-	vert[9 + 1] += .35;
-	
-	vert[24 + 1] += vehicle.h * vehicle.t + .09;
-	vert[27 + 0] -= .03;
-	vert[27 + 1] += vehicle.h * vehicle.t + .09;
-	vert[30 + 1] += vehicle.h * vehicle.t + .09;
-	vert[33 + 0] -= .03;
-	vert[33 + 1] += vehicle.h * vehicle.t + .09;
-	
-	vert[36 + 0] += 1.025;
-	vert[39 + 0] -= .25;
-	vert[42 + 0] += 1.025;
-	vert[45 + 0] -= .25;
-
-	inter.position.x -= vehicle.f / 2;
-	inter.position.y += .1;
-	
-	return inter;
-}
 
 function createCover(vehicle){
 	const cov = new THREE.Mesh(
