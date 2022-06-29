@@ -1,12 +1,19 @@
-function createSideMirror(size, segment, side, rotate){
+textures.createMaterials.push(function(){
+	textures.materials.car.mirror = new THREE.MeshStandardMaterial({
+        color: 0xffffff, metalness: 1.0, roughness: 0.5
+    });
+
+	textures.materials.car.sideMirror = new THREE.MeshLambertMaterial( {
+		map: textures.color
+	} );
+});
+
+function createSideMirror(size, segment, side, rotate, mode) {
 	const sideMirror = new THREE.Group();
-	const textureLoader = new THREE.TextureLoader();
 	
 	const type = 2*(.5 - side);
 
-	const coatMaterial = new THREE.MeshLambertMaterial( {
-		map: textureLoader.load("img/car/color.jpg")
-	} );
+	const coatMaterial = textures.materials.car.sideMirror;
 	
 	let mesh = new THREE.Mesh(
 		new THREE.SphereGeometry(1, segment, segment),
@@ -56,16 +63,22 @@ function createSideMirror(size, segment, side, rotate){
 	}
 	mesh.rotation.y -= rotate;
 	sideMirror.add(mesh);
-	
-	mesh = new THREE.Reflector(
-		new THREE.CircleGeometry(1, segment*2),
-		{
-			clipBias: 0.003,
-			textureWidth: window.innerWidth * window.devicePixelRatio,
-			textureHeight: window.innerHeight * window.devicePixelRatio,
-			color: 0x889999
-		}
-	);
+
+    mesh = new THREE.Mesh(
+        new THREE.CircleGeometry(1, segment * 2),
+        textures.materials.mirror
+    );
+    if (mode) {
+        mesh = new THREE.Reflector(
+            new THREE.CircleGeometry(1, segment * 2),
+            {
+                clipBias: 0.003,
+                textureWidth: window.innerWidth * window.devicePixelRatio,
+                textureHeight: window.innerHeight * window.devicePixelRatio,
+                color: 0x889999
+            }
+        );
+    }
 	
 	using = mesh.geometry.attributes.position.array;
 	for(let i =0; i < using.length; i+=3){
@@ -79,7 +92,6 @@ function createSideMirror(size, segment, side, rotate){
 	}
 	mesh.rotation.y -= Math.PI / 2 + rotate;
 	sideMirror.add(mesh);
-	arr.push(mesh);
 	
 	mesh = new THREE.Mesh(
 		new THREE.CylinderGeometry(size.depth / 4, size.depth / 4, 1, 16),
@@ -112,7 +124,7 @@ function createSideMirror(size, segment, side, rotate){
 	return sideMirror;
 }
 
-function createRightMirror(vehicle){
+function createRightMirror(vehicle, mode){
 	//サイドミラー
 	const segment = 32;
 	const size = {
@@ -122,7 +134,7 @@ function createRightMirror(vehicle){
 		out :2,
 		bottom :1
 	}
-	const rightMirror = createSideMirror(size, segment, 0, .25);
+	const rightMirror = createSideMirror(size, segment, 0, .25, mode);
 	rightMirror.position.x += .5;
 	rightMirror.position.y -= vehicle.h * vehicle.u / 2;
 	rightMirror.position.z += vehicle.w / 2 + (size.in + (size.depth / 4 + .5) * .199) * .125;
@@ -131,7 +143,7 @@ function createRightMirror(vehicle){
 	
 	return rightMirror;
 }
-function createLeftMirror(vehicle){
+function createLeftMirror(vehicle, mode){
 	//サイドミラー
 	const segment = 32;
 	const size = {
@@ -141,7 +153,7 @@ function createLeftMirror(vehicle){
 		out :2,
 		bottom :1
 	}
-	const leftMirror = createSideMirror(size, segment, 1, -.45);
+	const leftMirror = createSideMirror(size, segment, 1, -.42, mode);
 	leftMirror.position.x += .5;
 	leftMirror.position.y -= vehicle.h * vehicle.u / 2;
 	leftMirror.position.z -= vehicle.w / 2 + (size.in + (size.depth / 4 + .5) * .2) * .125;

@@ -1,3 +1,5 @@
+
+
 function createFrontChair(){
 	const chair = new THREE.Group();
 	
@@ -5,7 +7,7 @@ function createFrontChair(){
 	
 	//ヘッドレスト
 	let geometry = new THREE.CylinderGeometry(1, 1, 2, angle);
-	let material = new THREE.MeshLambertMaterial();
+	let material = textures.materials.template.lambert;
 	let mesh = new THREE.Mesh(geometry, material);
 	
 	const head = {
@@ -44,7 +46,7 @@ function createFrontChair(){
 	
 	//胴体部分
 	geometry = new THREE.CylinderGeometry(1, 1, 2, angle);
-	//material = new THREE.MeshNormalMaterial();
+	//material = textures.material.template.normal;
 	mesh = new THREE.Mesh(geometry, material);
 	
 	//形状の補正 元の形はsin(x)またはcos(x)
@@ -74,7 +76,7 @@ function createFrontChair(){
 	
 	//座席部分
 	geometry = new THREE.CylinderGeometry(1, 1 - .4, 1, angle);
-	//material = new THREE.MeshNormalMaterial();
+	//material = textures.material.template.normal;
 	mesh = new THREE.Mesh(geometry, material);
 	
 	//形状の補正 元の形はsin(x)またはcos(x)
@@ -108,7 +110,7 @@ function createRearChair(){
 	
 	//ヘッドレスト
 	let geometry = new THREE.CylinderGeometry(1, 1, 2, angle);
-	let material = new THREE.MeshLambertMaterial();
+	let material = textures.materials.template.lambert;
 	let mesh = new THREE.Mesh(geometry, material);
 	
 	const head = {
@@ -147,7 +149,7 @@ function createRearChair(){
 	chair.add(mesh);
 	
 	geometry = new THREE.CylinderGeometry(1, 1, 2, angle);
-	//material = new THREE.MeshNormalMaterial();
+	//material = textures.material.template.normal;
 	mesh = new THREE.Mesh(geometry, material);
 	using = mesh.geometry.attributes.position.array;
 	for(let i =0; i < using.length; i+=3){
@@ -169,7 +171,7 @@ function createRearChair(){
 	
 	//胴体部分
 	geometry = new THREE.CylinderGeometry(1, 1, 2, angle);
-	//material = new THREE.MeshNormalMaterial();
+	//material = textures.material.template.normal;
 	mesh = new THREE.Mesh(geometry, material);
 	
 	//形状の補正 元の形はsin(x)またはcos(x)
@@ -199,7 +201,7 @@ function createRearChair(){
 	
 	//座席部分
 	geometry = new THREE.CylinderGeometry(1, 1 - .4, 1, angle);
-	//material = new THREE.MeshNormalMaterial();
+	//material = textures.material.template.normal;
 	mesh = new THREE.Mesh(geometry, material);
 	
 	//形状の補正 元の形はsin(x)またはcos(x)

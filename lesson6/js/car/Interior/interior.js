@@ -1,21 +1,21 @@
-function createInterior(vehicle, body){
-	const textureLoader = new THREE.TextureLoader();
-	
+textures.createMaterials.push(function(){
 	const mats = [
 		new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide}),
 		new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide}),
 		new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide}),
-		new THREE.MeshLambertMaterial({map: textureLoader.load("img/image146.jpg"), side: THREE.BackSide}),
+		new THREE.MeshLambertMaterial({map: textures.floor, side: THREE.BackSide}),
 		new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide}),
 		new THREE.MeshBasicMaterial({color: 0xdddddd, side: THREE.BackSide})
 	];
-	
+
 	//mats[3].bumpMap = mats[3].map;
 	//mats[3].bumpscale = .2;
-	
+	textures.materials.car.interior = new THREE.MeshFaceMaterial(mats);
+});
+function createInterior(vehicle, body){	
 	const inter = new THREE.Mesh(
 			new THREE.BoxGeometry(vehicle.l - vehicle.f - .001, vehicle.h * vehicle.u - 0.2, vehicle.w - .01),
-			new THREE.MeshFaceMaterial(mats)
+			textures.materials.car.interior
 	);
 	const vert = inter.geometry.attributes.position.array;
 	const normal = inter.geometry.attributes.normal.array;
@@ -48,7 +48,7 @@ function createInterior(vehicle, body){
 }
 
 function createHandle(){
-	const material = new THREE.MeshNormalMaterial();
+	const material = textures.materials.template.normal;
 	const handle = new THREE.Group();
 	
 	let mesh = new THREE.Mesh(

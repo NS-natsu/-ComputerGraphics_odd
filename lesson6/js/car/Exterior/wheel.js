@@ -1,6 +1,35 @@
+textures.createMaterials.push(function(){
+	let material = new THREE.MeshStandardMaterial();
+	material.map = textures.wheel.rubber;
+	material.bumpMap = textures.wheel.rubberBump;
+	material.bumpscale = 0.2;
+	
+	textures.materials.car.wheel = {};
+	textures.materials.car.wheel.rubber = material;
+    
+    const mats = [
+		new THREE.MeshStandardMaterial( {
+			color: 0xffffff, metalness: .1, roughness: 0.5,
+			side: THREE.DoubleSide
+		} ),
+		new THREE.MeshPhysicalMaterial( {
+			metalness: .4, roughness: 0.5,
+			side: THREE.DoubleSide
+		} ),
+		null
+	];
+	mats[2] = mats[1];
+	mats[1].map = textures.wheel.axis;
+	mats[1].bumpMap = textures.wheel.axisBump;
+	mats[1].bumpscale;
+	mats[1].transparent = true;
+	textures.materials.car.wheel.axis = new THREE.MeshFaceMaterial(mats);
+
+	textures.materials.car.wheel.center = new THREE.MeshPhysicalMaterial( {color: 0xffffff, metalness: .1, roughness: 0.5} );
+});
+
 function createRim(){
 	const wheel = new THREE.Group();
-	const textureLoader = new THREE.TextureLoader();
 	
 	const size = 5;
 	const angle = 32;
@@ -11,12 +40,9 @@ function createRim(){
 
 	let mesh = new THREE.Mesh(
 		new THREE.TorusGeometry( size, 1, angle, angle ),
-		new THREE.MeshStandardMaterial()
+		textures.materials.car.wheel.rubber
 	);
 
-	mesh.material.map = textureLoader.load("img/wheel_rubber.jpg");
-	mesh.material.bumpMap = textureLoader.load("img/wheel_rubber-bump.jpg");
-	mesh.material.bumpscale = 0.2;
 	
 	const usingArr = mesh.geometry.attributes.position.array;
 	for(let i = 0; i <= angle; i++){
@@ -111,27 +137,10 @@ function createRim(){
 			}
 		}
 	}
-	
-	const mats = [
-		new THREE.MeshStandardMaterial( {
-			color: 0xffffff, metalness: .1, roughness: 0.5,
-			side: THREE.DoubleSide
-		} ),
-		new THREE.MeshPhysicalMaterial( {
-			metalness: .4, roughness: 0.5,
-			side: THREE.DoubleSide
-		} ),
-		null
-	];
-	mats[2] = mats[1];
-	mats[1].map = textureLoader.load("img/IMG_0365.png");
-	mats[1].bumpMap = textureLoader.load("img/NormalMap2.jpg");
-	mats[1].bumpscale;
-	mats[1].transparent = true;
 
 	mesh = new THREE.Mesh(
 		new THREE.CylinderGeometry( 1, 1, hRad, angle ),
-		new THREE.MeshFaceMaterial(mats)
+		textures.materials.car.wheel.axis
 	);
 	
 	let pos = 0;
@@ -175,7 +184,7 @@ function createRim(){
 	wheel.add(mesh);
 	mesh = new THREE.Mesh(
 		new THREE.CylinderGeometry( .5, .5, 2 * tmp.list[1] - .2, 32 ),
-		new THREE.MeshPhysicalMaterial( {color: 0xffffff, metalness: .1, roughness: 0.5} )
+		textures.materials.car.wheel.center
 	);
 	mesh.rotation.x += Math.PI / 2;
 	//wheel.add(mesh);

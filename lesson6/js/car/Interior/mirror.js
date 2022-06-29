@@ -1,7 +1,15 @@
-function createRoomMirror(){
+textures.createMaterials.push(function(){
+	textures.materials.car.mirror = new THREE.MeshStandardMaterial({
+		color: 0xffffff, metalness: 1.0, roughness: 0.5
+	});
+
+	textures.materials.car.roomMirror = new THREE.MeshLambertMaterial({color: 0xdddddd, side: THREE.DoubleSide});
+});
+
+function createRoomMirror(mode) {
 	const roomMirror = new THREE.Group();
 	
-	let mat = new THREE.MeshLambertMaterial({color: 0xdddddd, side: THREE.DoubleSide});
+	let mat = textures.materials.car.roomMirror;
 	
 	let mesh = new THREE.Mesh(
 		new THREE.BoxGeometry(.1, .2, .6),
@@ -15,23 +23,28 @@ function createRoomMirror(){
 	mesh.rotation.y = Math.PI / 2;
 	mesh.position.z += .05;
 
-	roomMirror.add(mesh);
-	
-	mesh = new THREE.Reflector(
-		new THREE.PlaneGeometry(.6, .2),
-		{
-			clipBias: 0.006,
-			textureWidth: window.innerWidth * window.devicePixelRatio,
-			textureHeight: window.innerHeight * window.devicePixelRatio,
-			color: 0x889999
-		}
-	);
+    roomMirror.add(mesh);
+
+    mesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(.6, .2),
+        textures.materials.mirror
+    );
+    if (mode) {
+        mesh = new THREE.Reflector(
+            new THREE.PlaneGeometry(.6, .2),
+            {
+                clipBias: 0.006,
+                textureWidth: window.innerWidth * window.devicePixelRatio,
+                textureHeight: window.innerHeight * window.devicePixelRatio,
+                color: 0x889999
+            }
+        );
+    }
 	
 	mesh.position.z += .1;;
 	mesh.rotation.x += .175;
 	
 	roomMirror.add(mesh);
-	arr.push(mesh);
 	
 	mesh = new THREE.Mesh(
 		new THREE.CylinderGeometry(.025, .025, .2, 16),
@@ -47,22 +60,21 @@ function createRoomMirror(){
 	roomMirror.add(mesh);
 	roomMirror.position.y += .055;
 	roomMirror.rotation.y = -Math.PI / 2 + .225;
-	arr.push(roomMirror);
 	
 	roomMirror.scale.set(.8, .8, .8);
 	
 	return roomMirror;
 }
 
-function createMirror(vehicle){
+function createMirror(vehicle, mode){
 	const mirror = new THREE.Group();
 	
 	//ルームミラー
-	mirror.add(createRoomMirror(vehicle));
+	mirror.add(createRoomMirror(mode));
 
 	//サイドミラー
-	mirror.add(createRightMirror(vehicle));
-	mirror.add(createLeftMirror(vehicle));
+    mirror.add(createRightMirror(vehicle, mode));
+    mirror.add(createLeftMirror(vehicle, mode));
 	
 	mirror.position.x += vehicle.l / 2 - vehicle.f - .5 - .1;
 	mirror.position.y += vehicle.h - .3;

@@ -1,4 +1,4 @@
-function createCar(scene) {
+function createCar(mode) {
 	const car = new THREE.Group();
 	const wheel = new Array();
 		
@@ -36,7 +36,7 @@ function createCar(scene) {
 	car.add(mesh);
 	
 	
-	mesh = createMirror(vehicle);
+	mesh = createMirror(vehicle, mode);
 	car.add(mesh);
 	
 	wheel.push(createRim());
@@ -104,7 +104,9 @@ function createCar(scene) {
 	//car.scale.set(10, 10, 10);
 	
 	//ライト
+	
 	const light = new Array();
+	
 	light.push(new THREE.SpotLight(0xffffff, 2, 50, Math.PI / 5, 0.2));
 	light.push(new THREE.SpotLight(0xffffff, 2, 50, Math.PI / 5, 0.2));
 
@@ -118,12 +120,11 @@ function createCar(scene) {
 	light[1].position.x += vehicle.l / 2;
 	light[1].position.y += vehicle.h * vehicle.u * .625;
 	light[1].position.z -= vehicle.w / 2 * .8;
-	light[1].castShadow = true;
 	
 	for(let i = 0; i < light.length; i++){
 		mesh = new THREE.Mesh(
 			new THREE.BoxGeometry(.1, .1, .1),
-			new THREE.MeshBasicMaterial({opacity: 0, transparent: true, depthTest: false})
+			textures.materials.target
 		);
 		mesh.position.x = light[i].position.x + 1;
 		mesh.position.y = light[i].position.y - .3;
@@ -135,9 +136,6 @@ function createCar(scene) {
 		car.add(light[i]);
 		car.add(mesh);
 	}
-	
-	
-	arr.push(light[0]);	
 	
 	return {
 		main: car,

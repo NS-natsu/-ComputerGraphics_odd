@@ -1,15 +1,18 @@
-function createSole(vehicle){
-	const textureLoader = new THREE.TextureLoader;
-	const mat = [0, 0, 0, 0, 0, 0];
-	for(let i = 0; i < 5; i++){
-		mat[i] = new THREE.MeshStandardMaterial()
-		mat[i].map = textureLoader.load("img/car/sole/sole" + i + ".jpg");
-		mat[i].bumpMap = mat[i].map;
-		mat[i].bumpscale = .2;
+textures.createMaterials.push(function(){
+	const tmp = [0,0,0,0,0,0];
+	for(let i = 0; i < 5; i++){ //6枚目の面が現状不使用
+		tmp[i] = new THREE.MeshStandardMaterial()
+		tmp[i].map = textures.sole[i];
+		tmp[i].bumpMap = tmp[i].map;
+		tmp[i].bumpscale = .2;
 	}
+
+	textures.materials.car.sole = new THREE.MeshFaceMaterial(tmp);
+});
+function createSole(vehicle){
 	const sole = new THREE.Mesh(
 			new THREE.BoxGeometry(1, 1, vehicle.w),
-			new THREE.MeshFaceMaterial(mat)
+			textures.materials.car.sole
 	);
 	const vert = sole.geometry.attributes.position.array;
 	const normal = sole.geometry.attributes.normal.array;
@@ -52,7 +55,7 @@ function createSole(vehicle){
 	return sole;
 }
 
-function createWindow(vehicle){
+textures.createMaterials.push(function(){
 	const bodyMaterial = new THREE.MeshPhysicalMaterial( {
 		color: 0xff0000, metalness: 0.3, roughness: 0.5, clearcoat: 1.0, clearcoatRoughness: 0.03, sheen: 0.5
 	} );
@@ -62,16 +65,18 @@ function createWindow(vehicle){
 		color: 0x0, metalness: 0.25, roughness: 0, side: THREE.DoubleSide,
 		opacity: .5, transparent: true//transmission: 1.0, 
 	} );
+
+	textures.materials.car.window = new THREE.MeshFaceMaterial([
+		glassMaterial,	glassMaterial,	bodyMaterial,
+		new THREE.MeshLambertMaterial({side: THREE.BackSide}),
+		glassMaterial,	glassMaterial
+	]);
+
+});
+function createWindow(vehicle){
 	const win = new THREE.Mesh(
 			new THREE.BoxGeometry(vehicle.l - vehicle.f, vehicle.h * vehicle.t, vehicle.w),
-			new THREE.MeshFaceMaterial([
-				glassMaterial,
-				glassMaterial,
-				bodyMaterial,
-				new THREE.MeshLambertMaterial({side: THREE.BackSide}),
-				glassMaterial,
-				glassMaterial
-			])
+			textures.materials.car.window
 	);
 	
 	const vert = win.geometry.attributes.position.array;
@@ -206,11 +211,13 @@ function createWindow(vehicle){
 	return win
 }
 
-
+textures.createMaterials.push(function(){
+	textures.materials.car.cover = new THREE.MeshStandardMaterial({color: 0});
+});
 function createCover(vehicle){
 	const cov = new THREE.Mesh(
 		new THREE.CylinderGeometry(.5, .5, vehicle.w - .01, 16),
-		new THREE.MeshStandardMaterial({color: 0})
+		textures.materials.car.cover
 	);
 	const vert = cov.geometry.attributes.position.array;	
 	
@@ -233,66 +240,47 @@ function createCover(vehicle){
 	cov.position.y -= .5;
 	
 	return cov;
-	
 }
 
-function createBody(vehicle){
-	const textureLoader = new THREE.TextureLoader();
-	
-	const mats = [
-		new THREE.MeshPhysicalMaterial( {
-			metalness: .3, roughness: 0.5, clearcoat: 1.0, clearcoatRoughness: 0.03, sheen: 0.5,
-			side: THREE.DoubleSide
-		} ),
-		new THREE.MeshPhysicalMaterial( {
-			metalness: .3, roughness: 0.5, clearcoat: 1.0, clearcoatRoughness: 0.03, sheen: 0.5,
-			side: THREE.DoubleSide
-		} ),
-		new THREE.MeshPhysicalMaterial( {
-			metalness: .3, roughness: 0.5, clearcoat: 1.0, clearcoatRoughness: 0.03, sheen: 0.5
-		} ),
-		new THREE.MeshPhysicalMaterial( {
-			metalness: .3, roughness: 0.5, clearcoat: 1.0, clearcoatRoughness: 0.03, sheen: 0.5
-		} ),
-		new THREE.MeshPhysicalMaterial( {
-			metalness: .3, roughness: 0.5, clearcoat: 1.0, clearcoatRoughness: 0.03, sheen: 0.5,
-			side: THREE.DoubleSide
-		} ),
-		new THREE.MeshPhysicalMaterial( {
-			metalness: .3, roughness: 0.5, clearcoat: 1.0, clearcoatRoughness: 0.03, sheen: 0.5,
-			side: THREE.DoubleSide
-		} )
-	];
+textures.createMaterials.push(function(){
+	const mats = [];
+	for(let i = 0; i < 6; i++){
+		mats[i] = new THREE.MeshPhysicalMaterial();
+		mats[i].metalness = .3;
+		mats[i].roughness = 0.5;
+		mats[i].clearcoat = 1.0;
+		mats[i].clearcoatRoughness = 0.03;
+		mats[i].sheen = 0.5;
+		mats[i].side = THREE.DoubleSide;
+		mats[i].bumpscale = .2;
+	}
 
-	mats[0].map = textureLoader.load("img/carBody/front.jpg");
+	mats[0].map = textures.body.front;
 	mats[0].bumpMap = mats[0].map;
-	mats[0].bumpscale = .2;
 	
-	mats[1].map = textureLoader.load("img/carBody/rear.jpg");
+	mats[1].map = textures.body.rear;
 	mats[1].bumpMap = mats[1].map;
-	mats[1].bumpscale = .2;
 
-	mats[2].map = textureLoader.load("img/carBody/bonnet.jpg");
+	mats[2].map = textures.color;
 	//mats[2].bumpMap = mats[2].map;
-	//mats[2].bumpscale = .2;
 	
-	mats[3].map = textureLoader.load("img/carBody/bonnet.jpg");
+	mats[3].map = textures.color;
 	//mats[3].bumpMap = mats[3].map;
-	//mats[3].bumpscale = .2;
 
 	mats[4].transparent = true;
-	mats[4].map = textureLoader.load("img/carBody/ur.png");
+	mats[4].map = textures.body.right;
 	mats[4].bumpMap = mats[4].map;
-	mats[4].bumpscale = .2;
 	
 	mats[5].transparent = true;
-	mats[5].map = textureLoader.load("img/carBody/ul.png");
+	mats[5].map = textures.body.left;
 	mats[5].bumpMap = mats[5].map;
-	mats[5].bumpscale = .2;
-	
+
+	textures.materials.car.body = new THREE.MeshFaceMaterial(mats);
+});
+function createBody(vehicle){
 	const body = new THREE.Mesh(
 			new THREE.BoxGeometry(vehicle.l, vehicle.h * vehicle.u, vehicle.w),
-			new THREE.MeshFaceMaterial(mats)
+			textures.materials.car.body
 	);
 	const vert = body.geometry.attributes.position.array;
 	const normal = body.geometry.attributes.normal.array;

@@ -1,14 +1,60 @@
 // ページの読み込みを待つ
 window.addEventListener('DOMContentLoaded', init);
 
-let test;
-let testm;
-let test_;
 let scene;
+
+const textures = {
+	init : function(){
+		const txtLoader = new THREE.TextureLoader();
+		textures.wall = txtLoader.load("img/env/road/wall.jpg"); //road.js :263
+		textures.road = txtLoader.load("img/env/road/floor.jpg"); //road.js :238
+		textures.sky = txtLoader.load("img/env/sky/sky.jpg"); //sky.js :7
+
+
+		textures.color = txtLoader.load("img/car/color.jpg"); // sideMirror :7
+		textures.floor = txtLoader.load("img/car/interior/floor.jpg"); //interior.js :6
+		
+		textures.wheel = {
+			rubber: txtLoader.load("img/car/exterior/wheel/rubber.jpg"), //wheel.js :17
+			rubberBump: txtLoader.load("img/car/exterior/wheel/rubberBump.jpg"), //wheel.js :18
+			axis: txtLoader.load("img/car/exterior/wheel/axis.png"), //wheel.js :127
+			axisBump: txtLoader.load("img/car/exterior/wheel/axisBump.jpg") //wheel.js :128
+		};
+
+		textures.sole = [// body.js :6
+			txtLoader.load("img/car/sole/sole0.jpg"),
+			txtLoader.load("img/car/sole/sole1.jpg"),
+			txtLoader.load("img/car/sole/sole2.jpg"),
+			txtLoader.load("img/car/sole/sole3.jpg"),
+			txtLoader.load("img/car/sole/sole4.jpg"),
+		];
+
+		textures.body = {
+			front: txtLoader.load("img/car/body/front.jpg"),// body.js :267
+			rear: txtLoader.load("img/car/body/rear.jpg"),// body.js :271
+			right: txtLoader.load("img/car/body/ur.png"),// body.js :284
+			left: txtLoader.load("img/car/body/ul.png")// body.js :289
+		}
+
+		for(let i = 0; i < textures.createMaterials.length; i++){
+			textures.createMaterials[i]();
+		}
+	},
+	createMaterials: new Array(),
+	materials: {
+		template: {
+			normal: new THREE.MeshNormalMaterial(),
+			lambert: new THREE.MeshLambertMaterial()
+		},
+		car: {},
+		target: new THREE.MeshBasicMaterial({opacity: 0, transparent: true, depthTest: false}),
+	}
+};
    
 const arr = new Array();
 
 function init() {
+	textures.init();
 	// サイズを指定
 	const width = 800
 	const height = 600;
@@ -62,9 +108,9 @@ function init() {
 	
 	// helper
 	const gridHelper = new THREE.GridHelper(2,10); // size, step
-	scene.add(gridHelper);
-	const axisHelper = new THREE.AxisHelper(5); //軸の長さ　X：赤、Y：緑、z：青
-	scene.add(axisHelper);
+	//scene.add(gridHelper);
+	const axisHelper = new THREE.AxesHelper(5); //軸の長さ　X：赤、Y：緑、z：青
+	//scene.add(axisHelper);
 	
 	scene.fog = new THREE.FogExp2(0x88888888, 0.0009765625);
 	
@@ -84,13 +130,15 @@ function init() {
 	
 	
 	const Objs = new THREE.Group();
-	const Sky = createSky(scene);
+	const Sky = createSky();
 	Objs.add(Sky);
-	
-	const Road = road(scene);
-	Objs.add(Road);
 
-	const Car = createCar(scene);
+    const Circum = createCircumstance();
+    Objs.add(Circum.main);
+
+    arr.push(Circum);
+
+	const Car = createCar(true);
 	Objs.add(Car.main);
 	
 	Car.main.rotation.y += Math.PI / 2;
@@ -99,7 +147,10 @@ function init() {
 	Car.main.position.y -= .3;
 	
 	scene.add(Objs);
-	Objs.position.set(-1.9, -2.5, .4);
+    Objs.position.set(-1.9, -2.5, .4);
+
+
+    //camera.position.set(0, 0, 5);
 	
 	update(); //繰り返しイベントへ 
 	
@@ -108,23 +159,19 @@ function init() {
 		// レンダリング
 		renderer.render(scene, camera);
 		requestAnimationFrame(update);
-		/*light.position.x = camera.position.x;
-		light.position.y = camera.position.y;
-		light.position.z = camera.position.z;*/
-		
+
+		Circum.update(0.0005);
+
 		for(let i = 0; i < Car.wheel.length; i++){
 			Car.wheel[i].rotation.z -= 0.5;
 		}
 		
 		
-		for(let i = 0; i < Road.children.length; i++) {
-			Road.children[i].rotation.z -= 0.05;
-		}
 	  
 		Sky.children[0].rotation.y += 0.0005;
 		let d = Sky.children[0].rotation.y;
 		
-		//昼は消える
+		//昼は消える 未実装
 		for(let i = 0; i < Car.light.length; i++){
 			continue;
 			if(d){
@@ -133,8 +180,8 @@ function init() {
 				Car.light[i].intensity = 0;
 			}
 		}
-		
-		scene.fog.density = 0.0009765625 + 0.0068359375 * Math.sin(d / 2) * Math.sin(d / 2);
+		let tmp = Math.cos(2 * Math.PI * Math.sin(d) / 3);
+		scene.fog.density = 0.0009765625 + 0.0068359375 * tmp * tmp;
 	
 		//min .1 max .6
 		ambient.intensity = .35 + .25 * Math.cos(d + Math.PI * 3 / 4);
