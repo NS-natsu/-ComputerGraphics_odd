@@ -230,7 +230,7 @@ function createRoad(torus) {
     
 	geometry.attributes.normal.normalized = true;*/
 
-    material.map = textures.road;
+    material.map = objData.txt.road;
     material.bumpMap = material.map;
     material.bumpscale = 0.2;
     material.map.wrapS = THREE.RepeatWrapping;
@@ -255,7 +255,7 @@ function createWall(torus) {
     const geometry = new THREE.TorusGeometry(torus.size, torus.width, 6, torus.angle);
     const material = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide });
 
-    material.map = textures.wall;
+    material.map = objData.txt.wall;
     material.bumpMap = material.map;
     material.bumpscale = 0.2;
     material.map.wrapS = THREE.RepeatWrapping;
@@ -455,9 +455,6 @@ function createCircumstance() {
     }
 
     //mesh.position.y -= stat.size;
-	
-	arr.push(stat);
-	arr.push(mesh);
 
     mesh.position.y -= stat.width / 2 + stat.size / 2 + 1;
     mesh.position.x += stat.size * Math.sqrt(3) / 2 + 13;
@@ -474,7 +471,6 @@ function createCircumstance() {
     mesh.rotation.y += Math.PI / 6;
 
     circum.add(mesh);
-    arr.push(circum);
 
     return {
         main: circum,

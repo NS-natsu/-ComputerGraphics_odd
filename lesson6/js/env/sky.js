@@ -4,7 +4,7 @@ function createSky(){
 	const skySize = 500;
 	const skyGeometry = new THREE.CylinderGeometry( skySize, skySize, 5000, 32 );
 	const skyMaterial = new THREE.MeshBasicMaterial({side: THREE.BackSide});
-	skyMaterial.map = textures.sky;
+	skyMaterial.map = objData.txt.sky;
 	skyMaterial.map.wrapS = THREE.MirroredRepeatWrapping;
 	skyMaterial.map.wrapT = THREE.MirroredRepeatWrapping;
 	skyMaterial.map.repeat.set(2, 2);

@@ -1,37 +1,42 @@
-textures.createMaterials.push(function(){
-	textures.materials.car.mirror = new THREE.MeshStandardMaterial({
+objData.createMats.push(function(){
+	objData.mat.car.mirror = new THREE.MeshStandardMaterial({
 		color: 0xffffff, metalness: 1.0, roughness: 0.5
 	});
 
-	textures.materials.car.roomMirror = new THREE.MeshLambertMaterial({color: 0xdddddd, side: THREE.DoubleSide});
+	objData.mat.car.roomMirror = new THREE.MeshLambertMaterial({color: 0xdddddd, side: THREE.DoubleSide});
 });
 
 function createRoomMirror(mode) {
 	const roomMirror = new THREE.Group();
 	
-	let mat = textures.materials.car.roomMirror;
-	
+	let geom = objData.geo.car.roomMirrorFrame;
 	let mesh = new THREE.Mesh(
-		new THREE.BoxGeometry(.1, .2, .6),
-		mat
+		geom || new THREE.BoxGeometry(.1, .2, .6),
+		objData.mat.car.roomMirror
 	);
 	
-	mesh.geometry.attributes.position.array[12] += .05;
-	mesh.geometry.attributes.position.array[15] += .05;
-	mesh.geometry.attributes.position.array[18] += .05;
-	mesh.geometry.attributes.position.array[21] += .05;
+	if(geom === undefined){
+		objData.geo.car.roomMirrorFrame = mesh.geometry;
+		
+		mesh.geometry.attributes.position.array[12] += .05;
+		mesh.geometry.attributes.position.array[15] += .05;
+		mesh.geometry.attributes.position.array[18] += .05;
+		mesh.geometry.attributes.position.array[21] += .05;
+	}
+	
 	mesh.rotation.y = Math.PI / 2;
 	mesh.position.z += .05;
 
     roomMirror.add(mesh);
 
+	geom = objData.geo.car.roomMirror;
     mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(.6, .2),
-        textures.materials.mirror
+        geom || new THREE.PlaneGeometry(.6, .2),
+        objData.mat.mirror
     );
     if (mode) {
         mesh = new THREE.Reflector(
-            new THREE.PlaneGeometry(.6, .2),
+            mesh.geometry,
             {
                 clipBias: 0.006,
                 textureWidth: window.innerWidth * window.devicePixelRatio,
@@ -40,16 +45,23 @@ function createRoomMirror(mode) {
             }
         );
     }
+
+	if(geom === undefined)
+		objData.geo.car.roomMirror = mesh.geometry;
 	
 	mesh.position.z += .1;;
 	mesh.rotation.x += .175;
 	
 	roomMirror.add(mesh);
 	
+	geom = objData.geo.car.roomMirrorAxis;
 	mesh = new THREE.Mesh(
-		new THREE.CylinderGeometry(.025, .025, .2, 16),
-		mat
+		geom || new THREE.CylinderGeometry(.025, .025, .2, 16),
+		objData.mat.car.roomMirror
 	);
+	
+	if(geom === undefined)
+		objData.geo.car.roomMirrorAxis = mesh.geometry;
 	
 	mesh.scale.set(1, 1, 1);
 	

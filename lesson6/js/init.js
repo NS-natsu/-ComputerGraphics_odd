@@ -1,27 +1,43 @@
 // ページの読み込みを待つ
 window.addEventListener('DOMContentLoaded', init);
 
-let scene;
-
-const textures = {
-	init : function(){
+const objData = {
+	txt: {},
+	mat: {
+		template: {
+			normal: new THREE.MeshNormalMaterial(),
+			lambert: new THREE.MeshLambertMaterial(),
+			target: new THREE.MeshBasicMaterial({opacity: 0, transparent: true, depthTest: false})
+		},
+		car:{},
+		env:{}
+	},
+	geo: {
+		template: {
+			smallBox: new THREE.BoxGeometry(.1, .1, .1)
+		},
+		car:{},
+		env:{}
+	},
+	createMats: new Array(),
+	init: function(){
 		const txtLoader = new THREE.TextureLoader();
-		textures.wall = txtLoader.load("img/env/road/wall.jpg"); //road.js :263
-		textures.road = txtLoader.load("img/env/road/floor.jpg"); //road.js :238
-		textures.sky = txtLoader.load("img/env/sky/sky.jpg"); //sky.js :7
+		objData.txt.wall = txtLoader.load("img/env/road/wall.jpg"); //road.js :263
+		objData.txt.road = txtLoader.load("img/env/road/floor.jpg"); //road.js :238
+		objData.txt.sky = txtLoader.load("img/env/sky/sky.jpg"); //sky.js :7
 
 
-		textures.color = txtLoader.load("img/car/color.jpg"); // sideMirror :7
-		textures.floor = txtLoader.load("img/car/interior/floor.jpg"); //interior.js :6
+		objData.txt.color = txtLoader.load("img/car/color.jpg"); // sideMirror :7
+		objData.txt.floor = txtLoader.load("img/car/interior/floor.jpg"); //interior.js :6
 		
-		textures.wheel = {
+		objData.txt.wheel = {
 			rubber: txtLoader.load("img/car/exterior/wheel/rubber.jpg"), //wheel.js :17
 			rubberBump: txtLoader.load("img/car/exterior/wheel/rubberBump.jpg"), //wheel.js :18
 			axis: txtLoader.load("img/car/exterior/wheel/axis.png"), //wheel.js :127
 			axisBump: txtLoader.load("img/car/exterior/wheel/axisBump.jpg") //wheel.js :128
 		};
 
-		textures.sole = [// body.js :6
+		objData.txt.sole = [// body.js :6
 			txtLoader.load("img/car/sole/sole0.jpg"),
 			txtLoader.load("img/car/sole/sole1.jpg"),
 			txtLoader.load("img/car/sole/sole2.jpg"),
@@ -29,32 +45,23 @@ const textures = {
 			txtLoader.load("img/car/sole/sole4.jpg"),
 		];
 
-		textures.body = {
+		objData.txt.body = {
 			front: txtLoader.load("img/car/body/front.jpg"),// body.js :267
 			rear: txtLoader.load("img/car/body/rear.jpg"),// body.js :271
-			right: txtLoader.load("img/car/body/ur.png"),// body.js :284
-			left: txtLoader.load("img/car/body/ul.png")// body.js :289
+			right: txtLoader.load("img/car/body/right.png"),// body.js :284
+			left: txtLoader.load("img/car/body/left.png")// body.js :289
 		}
-
-		for(let i = 0; i < textures.createMaterials.length; i++){
-			textures.createMaterials[i]();
+		
+		for(let i = 0; i < objData.createMats.length; i++){
+			objData.createMats[i]();
 		}
-	},
-	createMaterials: new Array(),
-	materials: {
-		template: {
-			normal: new THREE.MeshNormalMaterial(),
-			lambert: new THREE.MeshLambertMaterial()
-		},
-		car: {},
-		target: new THREE.MeshBasicMaterial({opacity: 0, transparent: true, depthTest: false}),
 	}
 };
    
 const arr = new Array();
 
 function init() {
-	textures.init();
+	objData.init();
 	// サイズを指定
 	const width = 800
 	const height = 600;
@@ -67,7 +74,7 @@ function init() {
 	renderer.shadowMap.enabled = true;
 	
 	// シーンを作成
-	scene = new THREE.Scene();
+	let scene = new THREE.Scene();
 	
 	//背景色設定
 	scene.background = new THREE.Color( 0xffffff );
@@ -108,9 +115,9 @@ function init() {
 	
 	// helper
 	const gridHelper = new THREE.GridHelper(2,10); // size, step
-	//scene.add(gridHelper);
+	scene.add(gridHelper);
 	const axisHelper = new THREE.AxesHelper(5); //軸の長さ　X：赤、Y：緑、z：青
-	//scene.add(axisHelper);
+	scene.add(axisHelper);
 	
 	scene.fog = new THREE.FogExp2(0x88888888, 0.0009765625);
 	
@@ -136,8 +143,6 @@ function init() {
     const Circum = createCircumstance();
     Objs.add(Circum.main);
 
-    arr.push(Circum);
-
 	const Car = createCar(true);
 	Objs.add(Car.main);
 	
@@ -148,9 +153,6 @@ function init() {
 	
 	scene.add(Objs);
     Objs.position.set(-1.9, -2.5, .4);
-
-
-    //camera.position.set(0, 0, 5);
 	
 	update(); //繰り返しイベントへ 
 	

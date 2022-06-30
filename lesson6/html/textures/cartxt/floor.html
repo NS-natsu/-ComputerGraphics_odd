@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>テクスチャ  空</title>
+    <style>
+    	body {
+    		background-color: #eedcb3;
+    	}
+    	.wrapper{
+    		display: grid;
+    		width: 800px;
+    		grid-auto-rows: minmax(30px, auto);
+    		grid-auto-columns: minmax(0px, auto);
+    	}
+    	
+    	.title{
+    		font-size: 24px;
+			grid-row: 1 / 2;
+			grid-column: 1 / 6;
+    	}
+    	
+    	#img{
+			grid-row: 3 / 4;
+			grid-column: 2 / 3;
+    	}
+    	
+    	.floortitle{
+    		text-align: center;
+    	}
+    	
+    	#ft{
+			grid-row: 2 / 3;
+			grid-column: 2 / 3;
+    	}
+    </style>
+</head>
+<body>
+    <h1>コンピュータグラフィックス　奇数</h1>
+    <div class="wrapper">
+	    <div class = "wrapper" style="grid-row:1/2;">
+		    <div class="title">
+		    	床の画像<br>
+		    </div>
+		    <div id="ft" class="floortitle">floor.jpg</div>
+		    <img id="img" src="../img/car/interior/floor.jpg" width="680px" height="680px">
+	    </div>
+    </div>
+</body>
+</html>

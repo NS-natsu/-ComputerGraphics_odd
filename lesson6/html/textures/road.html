@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>テクスチャ  道</title>
+    <style>
+    	body {
+    		background-color: #eedcb3;
+    	}
+    	.wrapper{
+    		display: grid;
+    		width: 800px;
+    		grid-template-columns: 400px 400px;
+    		grid-auto-rows: minmax(30px, auto);
+    	}
+    	
+    	.title1{
+    		font-size: 24px;
+			grid-column-start: 1;
+			grid-column-end: 2;
+			grid-row-start: 1;
+			grid-row-end: 2;
+    	}
+    	
+    	.title2{
+    		font-size: 24px;
+			grid-column-start: 2;
+			grid-column-end: 3;
+			grid-row-start: 1;
+			grid-row-end: 2;
+    	}
+    	
+    	#img1{
+			 grid-column-start: 1;
+			 grid-column-end: 2;
+			 grid-row-start: 3;
+			 grid-row-end: 4;
+    	}
+    	
+    	#img2{
+			 grid-column-start: 2;
+			 grid-column-end: 3;
+			 grid-row-start: 3;
+			 grid-row-end: 4;
+    	}
+    	
+    	.roadtitle{
+    		text-align: center;
+    	}
+    	
+    	#rt1{
+			 grid-column-start: 1;
+			 grid-column-end: 2;
+			 grid-row-start: 2;
+			 grid-row-end: 3;
+    	}
+    	
+    	#rt2{
+			 grid-column-start: 2;
+			 grid-column-end: 3;
+			 grid-row-start: 2;
+			 grid-row-end: 3;
+    	}
+    </style>
+</head>
+<body>
+    <h1>コンピュータグラフィックス　奇数</h1>
+    <div class = "wrapper">
+	    <div class="title1">
+	    	路地の画像
+	    	
+	    </div>
+	    <div id="rt1" class="roadtitle">floor.jpg</div>
+	    <img id="img1" src="../../img/env/road/floor.jpg" width="360px" height="296px">
+	    
+	    <div class="title2">
+	    	道路の壁の画像
+	    </div>
+	    <div id="rt2" class="roadtitle">wall.jpg</div>
+	    <img id="img2" src="../../img/env/road/wall.jpg" width="360px" height="1080px">
+    </div>
+</body>
+</html>

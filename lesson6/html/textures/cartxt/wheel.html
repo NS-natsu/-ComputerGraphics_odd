@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>テクスチャ  タイヤ</title>
+    <style>
+    	body {
+    		background-color: #eedcb3;
+    	}
+    	.wrapper{
+    		display: grid;
+    		width: 800px;
+    		grid-auto-rows: minmax(30px, auto);
+    		grid-auto-columns: minmax(30pxpx, auto);
+    	}
+    	
+    	.title1{
+    		font-size: 24px;
+			grid-row: 1 / 2;
+			grid-column: 1 / 6;
+    	}
+    	
+    	.title2{
+    		font-size: 24px;
+			grid-row: 1 / 2;
+			grid-column: 1 / 6;
+    	}
+    	
+    	#img1{
+			grid-column-start: 1;
+			grid-column-end: 2;
+			
+			grid-row-start: 3;
+			grid-row-end: 4;
+    	}
+    	
+    	#img2{
+			grid-column-start: 3;
+			grid-column-end: 4;
+			
+			grid-row-start: 3;
+			grid-row-end: 4;
+    	}
+    	
+    	.rubbertitle{
+    		text-align: center;
+    	}
+    	
+    	#rt1{
+			grid-row: 2 / 3;
+			grid-column: 1 / 2;
+    	}
+    	
+    	#rt2{
+			grid-row: 2 / 3;
+			grid-column: 3 / 4;
+    	}
+    	
+    	#img3{
+			grid-column: 1 / 2;
+			
+			grid-row: 3 / 4;
+    	}
+    	
+    	#img4{
+			grid-column: 3 / 4;
+			
+			grid-row: 3 / 4;
+    	}
+    	
+    	.axistitle{
+    		text-align: center;
+    	}
+    	
+    	#at1{
+			grid-row: 2 / 3;
+			grid-column: 1 / 2;
+    	}
+    	
+    	#at2{
+			grid-row: 2 / 3;
+			grid-column: 3 / 4;
+    	}
+    </style>
+</head>
+<body>
+    <h1>コンピュータグラフィックス　奇数</h1>
+    <div class="wrapper">
+	    <div class = "wrapper" style="grid-row:1/2;">
+		    <div class="title1">
+		    	ホイールの画像とバンプマップ
+		    </div>
+		    <div id="rt1" class="rubbertitle">rubber.jpg</div>
+		    <div id="rt2" class="rubbertitle">rubberBump.jpg</div>
+		    <img id="img1" src="../img/car/exterior/wheel/rubber.jpg">
+		    <img id="img2" src="../img/car/exterior/wheel/rubberBump.jpg">
+	    </div>
+	    <div class="wrapper" style="grid-row:8/9;">
+		    <div class="title2">
+		    </div>
+		    <div id="at1" class="axistitle">axis.png</div>
+		    <div id="at2" class="axistitle">axisBump.jpg</div>
+		    <img id="img3" src="../img/car/exterior/wheel/axis.png" width="356px" height="355px">
+		    <img id="img4" src="../img/car/exterior/wheel/axisBump.jpg" width="356px" height="355px">
+	    </div>
+    </div>
+</body>
+</html>

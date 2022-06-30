@@ -12,9 +12,18 @@ function createCar(mode) {
 		u: .6
 	};
 	
-	let mesh = createWindow(vehicle);
+	let mesh = createBody(vehicle);
+	mesh.position.y += .5;
+	car.add(mesh);
+	
+	mesh = createFrame(vehicle);
 	mesh.position.y += .5
 	car.add(mesh);
+	
+	mesh = createWindow(vehicle);
+	mesh.position.y += .5
+	car.add(mesh);
+	
 
 	mesh = createInterior(vehicle, mesh.geometry.attributes);
 	mesh.position.y += .5;
@@ -31,9 +40,6 @@ function createCar(mode) {
 	car.add(mesh);
 
 	
-	mesh = createBody(vehicle);
-	mesh.position.y += .5;
-	car.add(mesh);
 	
 	
 	mesh = createMirror(vehicle, mode);
@@ -91,11 +97,12 @@ function createCar(mode) {
 	car.add(mesh);
 	
 	mesh = createHandle();
-	/*mesh.position.x -= 1.2;
+	mesh.position.x += 1.2;
 	mesh.position.y += .85;
-	mesh.rotation.y += Math.PI;
-	mesh.scale.set(.4, .5, .4);*/
-	//car.add(mesh);
+	mesh.position.z += .4;
+	mesh.rotation.y -= Math.PI / 2;
+	mesh.scale.set(.2, .2, .2);
+	car.add(mesh);
 	
 	//car.rotation.x += Math.PI / 2;
 	
@@ -123,8 +130,8 @@ function createCar(mode) {
 	
 	for(let i = 0; i < light.length; i++){
 		mesh = new THREE.Mesh(
-			new THREE.BoxGeometry(.1, .1, .1),
-			textures.materials.target
+			objData.geo.template.smallBox,
+			objData.mat.template.target
 		);
 		mesh.position.x = light[i].position.x + 1;
 		mesh.position.y = light[i].position.y - .3;

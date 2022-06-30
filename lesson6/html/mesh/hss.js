@@ -1,0 +1,98 @@
+// ページの読み込みを待つ
+window.addEventListener('DOMContentLoaded', init);
+
+const objData = {
+	txt: {},
+	mat: {
+		template: {
+			normal: new THREE.MeshNormalMaterial(),
+			lambert: new THREE.MeshLambertMaterial(),
+			target: new THREE.MeshBasicMaterial({opacity: 0, transparent: true, depthTest: false})
+		},
+		car:{},
+		env:{}
+	},
+	geo: {
+		template: {
+			smallBox: new THREE.BoxGeometry(.1, .1, .1)
+		},
+		car:{},
+		env:{}
+	},
+	createMats: new Array(),
+	init: function(){
+		const txtLoader = new THREE.TextureLoader();
+		objData.txt.wall = txtLoader.load("../../img/env/road/wall.jpg"); //road.js :263
+		objData.txt.road = txtLoader.load("../../img/env/road/floor.jpg"); //road.js :238
+		objData.txt.sky = txtLoader.load("../../img/env/sky/sky.jpg"); //sky.js :7
+
+
+		objData.txt.color = txtLoader.load("../../img/car/color.jpg"); // sideMirror :7
+		objData.txt.floor = txtLoader.load("../../img/car/interior/floor.jpg"); //interior.js :6
+		
+		objData.txt.wheel = {
+			rubber: txtLoader.load("../../img/car/exterior/wheel/rubber.jpg"), //wheel.js :17
+			rubberBump: txtLoader.load("../../img/car/exterior/wheel/rubberBump.jpg"), //wheel.js :18
+			axis: txtLoader.load("../../img/car/exterior/wheel/axis.png"), //wheel.js :127
+			axisBump: txtLoader.load("../../img/car/exterior/wheel/axisBump.jpg") //wheel.js :128
+		};
+
+		objData.txt.sole = [// body.js :6
+			txtLoader.load("../../img/car/sole/sole0.jpg"),
+			txtLoader.load("../../img/car/sole/sole1.jpg"),
+			txtLoader.load("../../img/car/sole/sole2.jpg"),
+			txtLoader.load("../../img/car/sole/sole3.jpg"),
+			txtLoader.load("../../img/car/sole/sole4.jpg"),
+		];
+
+		objData.txt.body = {
+			front: txtLoader.load("../../img/car/body/front.jpg"),// body.js :267
+			rear: txtLoader.load("../../img/car/body/rear.jpg"),// body.js :271
+			right: txtLoader.load("../../img/car/body/right.png"),// body.js :284
+			left: txtLoader.load("../../img/car/body/left.png")// body.js :289
+		}
+		
+		for(let i = 0; i < objData.createMats.length; i++){
+			objData.createMats[i]();
+		}
+	}
+};
+
+function init() {
+	objData.init();
+	const width = 800
+	const height = 600;
+	var renderer = new THREE.WebGLRenderer();
+	document.body.appendChild(renderer.domElement);
+	renderer.setSize(width, height);
+	renderer.shadowMap.enabled = true;
+	let scene = new THREE.Scene();
+	scene.background = new THREE.Color( 0xffffff );
+	const ambient = new THREE.AmbientLight(0xFFFFFF, .2)
+	const camera = new THREE.PerspectiveCamera(45, width / height);
+	const controls = new THREE.OrbitControls(camera, document.body); 
+	const directionalLightM = new THREE.DirectionalLight(0xffffff, 0.3);
+	directionalLightM.position.set(0, 10, -5);
+	directionalLightM.castShadow = true; 
+	scene.add(directionalLightM);
+	let light = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 20, 0.2);
+	light.position.set(0,0, 5);
+	light.castShadow = true;
+	scene.add(light);
+	const directionalLightS = new THREE.DirectionalLight(0xffffff,0.3);
+	directionalLightS.position.set(-1, -1, 1);
+	scene.add(directionalLightS);
+	const gridHelper = new THREE.GridHelper(2,10);
+	scene.add(gridHelper);
+	const axisHelper = new THREE.AxesHelper(5);
+	scene.add(axisHelper);
+	scene.add(ambient);
+	const Objs = createSky();
+	scene.add(Objs);
+	camera.position.set(0, 0, 100);
+	update();
+	function update() {
+		renderer.render(scene, camera);
+		requestAnimationFrame(update);
+	}
+}

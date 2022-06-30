@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>テクスチャ  空</title>
+    <style>
+    	body {
+    		background-color: #eedcb3;
+    	}
+    	.wrapper{
+    		display: grid;
+    		width: 800px;
+    		grid-auto-rows: minmax(30px, auto);
+    	}
+    	
+    	.title{
+    		font-size: 24px;
+			grid-row: 1 / 2;
+    	}
+    	
+    	.skytitle{
+    		text-align: center;
+    	}
+    	
+    	#img{
+			grid-row: 3 / 4;
+    	}
+    	
+    	#st{
+			grid-row: 2 / 3;
+    	}
+    </style>
+</head>
+<body>
+    <h1>コンピュータグラフィックス　奇数</h1>
+    <div class = "wrapper">
+	    <div class="title">
+	    	空の画像<br>
+	    </div>
+	    <div id="st" class="skytitle">sky.jpg</div>
+	    <img id="img" src="../../img/env/sky/sky.jpg" width="800px" height="800px">
+    </div>
+</body>
+</html>
