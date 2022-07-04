@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/objects/Reflector.js"></script>
+  </head>
+<body>
+	<script src="../js/init/mirror.js"></script>
+	<script type="text/javascript">
+		objData.init = function(){
+			const txtLoader = new THREE.TextureLoader();
+			objData.txt.wall = txtLoader.load("../img/env/road/wall.jpg"); //road.js :263
+			objData.txt.road = txtLoader.load("../img/env/road/floor.jpg"); //road.js :238
+			objData.txt.sky = txtLoader.load("../img/env/sky/sky.jpg"); //sky.js :7
+
+			objData.txt.color = txtLoader.load("../img/car/color.jpg"); // sideMirror :7
+			objData.txt.floor = txtLoader.load("../img/car/interior/floor.jpg"); //interior.js :6
+			
+			objData.txt.wheel = {
+				rubber: txtLoader.load("../img/car/exterior/wheel/rubber.jpg"), //wheel.js :17
+				rubberBump: txtLoader.load("../img/car/exterior/wheel/rubberBump.jpg"), //wheel.js :18
+				axis: txtLoader.load("../img/car/exterior/wheel/axis.png"), //wheel.js :127
+				axisBump: txtLoader.load("../img/car/exterior/wheel/axisBump.jpg") //wheel.js :128
+			};
+
+			objData.txt.sole = [// body.js :6
+				txtLoader.load("../img/car/sole/sole0.jpg"),
+				txtLoader.load("../img/car/sole/sole1.jpg"),
+				txtLoader.load("../img/car/sole/sole2.jpg"),
+				txtLoader.load("../img/car/sole/sole3.jpg"),
+				txtLoader.load("../img/car/sole/sole4.jpg"),
+			];
+
+			objData.txt.body = {
+				front: txtLoader.load("../img/car/body/front.jpg"),// body.js :267
+				rear: txtLoader.load("../img/car/body/rear.jpg"),// body.js :271
+				right: txtLoader.load("../img/car/body/right.png"),// body.js :284
+				left: txtLoader.load("../img/car/body/left.png")// body.js :289
+			}
+			
+			for(let i = 0; i < objData.createMats.length; i++){
+				objData.createMats[i]();
+			}
+		};
+	</script>
+	
+	<script src="../js/car/body.js"></script>
+	<script src="../js/car/Exterior/frame.js"></script>
+	<script src="../js/car/Exterior/window.js"></script>
+	<script src="../js/car/Exterior/sideMirror.js"></script>
+	<script src="../js/car/Exterior/wheel.js"></script>
+	<script src="../js/car/Interior/interior.js"></script>
+	<script src="../js/car/Interior/chair.js"></script>
+	<script src="../js/car/Interior/mirror.js"></script>
+	<script src="../js/car/car.js"></script>
+
+	<script src="../js/env/sky.js"></script>
+	<script src="road.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@ function road(scene) {
 	const textureLoader = new THREE.TextureLoader();
     const road = new THREE.Group();
 
-    const torus_size = 10000;
+    const torus_size = 1000;
     const torus_width = 23;
     const torus_angle = torus_size / 10;
 
@@ -346,9 +346,9 @@ function createWall(torus) {
 
 function createCircumstance() {
     const stat = {
-        size: 10000,
+        size: 1000,
         width: 23,
-        angle: 1000
+        angle: 100
     };
 
     const circum = new THREE.Group();
@@ -358,7 +358,7 @@ function createCircumstance() {
 	
     let wheel = new Array();
     let car, tmp;
-	for(let i = 0; i < 4; i++){
+	for(let i = 0; i < 1; i++){
 	    car = createCar(false);
 		tmp = new THREE.Group();
 		
@@ -389,7 +389,7 @@ function createCircumstance() {
 		mesh.add(car.main);
 	}
 
-    for(let i = 0; i < 2; i++){
+    for(let i = 0; i < 1; i++){
         car = createCar(false);
         tmp = new THREE.Group();
         
@@ -478,16 +478,12 @@ function createCircumstance() {
         update: function(d){
             circum.children[0].rotation.z += d;
             circum.children[1].rotation.z += d;
+            
+			circum.children[0].children[1].rotation.z += d;
 
-            circum.children[0].children[1].rotation.z += d;
-            circum.children[0].children[2].rotation.z += d;
-            circum.children[0].children[3].rotation.z += d;
-            circum.children[0].children[4].rotation.z += d;
+            circum.children[0].children[2].rotation.z += 1.1*d;
 
-            circum.children[0].children[5].rotation.z += 1.1*d;
-            circum.children[0].children[6].rotation.z += 1.1*d;
-
-            circum.children[0].children[7].rotation.z -= 1.1*d;
+            circum.children[0].children[3].rotation.z -= 1.1*d;
 
             for(let i = 0; i < wheel.length; i++){
                 wheel[i].rotation.z -= 0.5;
