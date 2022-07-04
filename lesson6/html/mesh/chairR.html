@@ -96,9 +96,10 @@
 			const axisHelper = new THREE.AxesHelper(5);
 			scene.add(axisHelper);
 			scene.add(ambient);
-			const mesh = createHandle();
+
+			const mesh = createRearChair();
 			scene.add(mesh);
-			camera.position.set(0, 0, 15);
+			camera.position.set(0, 0, 10);
 			update();
 			function update() {
 				renderer.render(scene, camera);
@@ -109,6 +110,6 @@
 			}
 		}
 	</script>
-	<script src="../../js/car/Interior/interior.js"></script>
+	<script src="../../js/car/Interior/chair.js"></script>
 </body>
 </html>

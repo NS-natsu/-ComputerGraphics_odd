@@ -3,7 +3,6 @@
     <meta charset="utf-8" />
     <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
     <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://unpkg.com/three@0.137.4/examples/js/objects/Reflector.js"></script>
   </head>
 <body>
 	<script type="text/javascript">
@@ -96,9 +95,19 @@
 			const axisHelper = new THREE.AxesHelper(5);
 			scene.add(axisHelper);
 			scene.add(ambient);
-			const mesh = createHandle();
+			
+			const vehicle = {
+				h : 2,
+				w : 1.7,
+				l : 4.7,
+				f : .8,
+				
+				t: .4,
+				u: .6
+			};
+			const mesh = createFrame(vehicle);
 			scene.add(mesh);
-			camera.position.set(0, 0, 15);
+			camera.position.set(0, 0, 10);
 			update();
 			function update() {
 				renderer.render(scene, camera);
@@ -109,6 +118,6 @@
 			}
 		}
 	</script>
-	<script src="../../js/car/Interior/interior.js"></script>
+	<script src="../../js/car/Exterior/frame.js"></script>
 </body>
 </html>

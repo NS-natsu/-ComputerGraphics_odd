@@ -32,7 +32,7 @@ function createRoomMirror(mode) {
 	geom = objData.geo.car.roomMirror;
     mesh = new THREE.Mesh(
         geom || new THREE.PlaneGeometry(.6, .2),
-        objData.mat.mirror
+        objData.mat.car.mirror
     );
     if (mode) {
         mesh = new THREE.Reflector(

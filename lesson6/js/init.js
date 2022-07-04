@@ -153,6 +153,9 @@ function init() {
 	
 	scene.add(Objs);
     Objs.position.set(-1.9, -2.5, .4);
+
+	objData.mat.car.body[4].transparent = false;
+	objData.mat.car.body[5].transparent = false;
 	
 	update(); //繰り返しイベントへ 
 	

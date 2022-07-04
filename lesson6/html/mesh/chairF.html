@@ -3,8 +3,7 @@
     <meta charset="utf-8" />
     <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
     <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://unpkg.com/three@0.137.4/examples/js/objects/Reflector.js"></script>
-  </head>
+    </head>
 <body>
 	<script type="text/javascript">
 		// ページの読み込みを待つ
@@ -96,9 +95,10 @@
 			const axisHelper = new THREE.AxesHelper(5);
 			scene.add(axisHelper);
 			scene.add(ambient);
-			const mesh = createHandle();
+			
+			const mesh = createFrontChair();
 			scene.add(mesh);
-			camera.position.set(0, 0, 15);
+			camera.position.set(0, 0, 10);
 			update();
 			function update() {
 				renderer.render(scene, camera);
@@ -109,6 +109,6 @@
 			}
 		}
 	</script>
-	<script src="../../js/car/Interior/interior.js"></script>
+	<script src="../../js/car/Interior/chair.js"></script>
 </body>
 </html>
