@@ -1,5 +1,8 @@
 objData.createMats.push(function(){
-	objData.mat.car.mirror = new THREE.MeshStandardMaterial({
+	if(objData.mat.car.mirror === undefined){
+		objData.mat.car.mirror = {};
+	}
+	objData.mat.car.mirror.mat = new THREE.MeshStandardMaterial({
 		color: 0xffffff, metalness: 1.0, roughness: 0.5
 	});
 
