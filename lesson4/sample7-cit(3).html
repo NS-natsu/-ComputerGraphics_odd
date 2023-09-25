@@ -9,6 +9,8 @@
       // ページの読み込みを待つ
       window.addEventListener('DOMContentLoaded', init);
 
+       let controls;
+
       function init() {
         // サイズを指定
         const width = 800
@@ -28,7 +30,7 @@
         camera.position.set(0, 0, 5);
 
         // カメラコントローラーを作成
-        const controls = new THREE.OrbitControls(camera, document.body); 
+        controls = new THREE.OrbitControls(camera, document.body); 
         
         // 平行光源1
         var directionalLight1 = new THREE.DirectionalLight(0xffffff);
